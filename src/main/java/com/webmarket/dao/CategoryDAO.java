@@ -10,24 +10,25 @@ import java.util.List;
 public class CategoryDAO {
 
     public List<Category> getAllCategories() {
-        List<Category> categories = new ArrayList<>();
-        String sql = "SELECT * FROM category";
+        List<Category> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM categories";
 
         try (Connection conn = DBUtil.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Category category = new Category();
-                category.setId(rs.getInt("id"));
-                category.setName(rs.getString("name"));
-                categories.add(category);
+                Category c = new Category();
+                c.setId(rs.getInt("id"));
+                c.setName(rs.getString("name"));
+                list.add(c);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return categories;
+        return list;
     }
 }

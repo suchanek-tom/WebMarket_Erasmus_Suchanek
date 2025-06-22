@@ -28,12 +28,44 @@ main {
 
 h1, h2 {
     margin: 0 0 1rem;
+    color: red;
 }
+
+button {
+    padding: 6px 12px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 4px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button[type="submit"][style*="color:red"] {
+    background-color: #dc3545;
+}
+
+button[type="submit"][style*="color:red"]:hover {
+    background-color: #a71d2a;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: white;
 }
+
+th {
+    background-color: #007BFF;
+    color: white;
+}
+
 td, th {
-    padding: 8px;
-    text-align: left;
+    border: 1px solid #ddd;
+    padding: 10px;
 }

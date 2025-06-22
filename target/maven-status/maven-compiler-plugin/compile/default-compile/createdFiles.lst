@@ -1,8 +1,10 @@
 com\webmarket\controller\purchaser\PurchaserRequestController.class
+com\webmarket\controller\technician\TechnicianApproveController.class
 com\webmarket\utils\FreemarkerConfig.class
 com\webmarket\model\Notification.class
 com\webmarket\dao\CategoryDAO.class
 com\webmarket\model\Category.class
+com\webmarket\controller\admin\AdminController.class
 com\webmarket\controller\purchaser\PurchaserDashboardController.class
 com\webmarket\controller\RootRedirectController.class
 com\webmarket\dao\ProposalDAO.class
@@ -15,10 +17,9 @@ com\webmarket\dao\UserDAO.class
 com\webmarket\model\PurchaseRequest.class
 com\webmarket\dao\PurchaseRequestDAO.class
 com\webmarket\controller\AuthController.class
-com\webmarket\controller\admin\AdminDashboardController.class
+com\webmarket\controller\technician\TechnicianRejectController.class
 com\webmarket\model\PurchaseProposal.class
 com\webmarket\controller\ProfileController.class
 com\webmarket\model\User.class
 com\webmarket\webmarket\JakartaRestConfiguration.class
 com\webmarket\model\Feature.class
-com\webmarket\controller\PurchaserController.class

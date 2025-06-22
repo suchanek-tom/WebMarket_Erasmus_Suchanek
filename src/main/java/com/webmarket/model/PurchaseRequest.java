@@ -6,6 +6,14 @@ public class PurchaseRequest {
     private int purchaserId;
     private String notes;
     private String status;
+    private String categoryName;
+    private String purchaserName;
+
+    public String getPurchaserName() { return purchaserName; }
+    public void setPurchaserName(String purchaserName) { this.purchaserName = purchaserName; }
+    
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
 
     // Getters & Setters
     public int getId() { return id; }

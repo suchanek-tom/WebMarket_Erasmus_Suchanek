@@ -1,0 +1,35 @@
+<h2>Technician Dashboard</h2>
+
+<p>Welcome, technician!</p>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Category</th>
+            <th>Notes</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <#list requests as req>
+        <tr>
+            <td>${req.id}</td>
+            <td>${req.categoryName}</td>
+            <td>${req.notes}</td>
+            <td>
+                <form action="/WebMarket/technician/approve" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="${req.id}">
+                    <button type="submit">Approve</button>
+                </form>
+                <form action="/WebMarket/technician/reject" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="${req.id}">
+                    <button type="submit">Reject</button>
+                </form>
+            </td>
+        </tr>
+        </#list>
+    </tbody>
+</table>
+
+<a href="/WebMarket/logout">Logout</a>

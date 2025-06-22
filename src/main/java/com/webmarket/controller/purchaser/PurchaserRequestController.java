@@ -19,7 +19,6 @@ import java.util.Map;
 
 @WebServlet("/purchaser/request")
 public class PurchaserRequestController extends HttpServlet {
-
     private final CategoryDAO categoryDAO = new CategoryDAO();
     private final PurchaseRequestDAO requestDAO = new PurchaseRequestDAO();
 
@@ -29,7 +28,7 @@ public class PurchaserRequestController extends HttpServlet {
 
         List<Category> categories = categoryDAO.getAllCategories();
         Configuration cfg = FreemarkerConfig.getConfig();
-        Template template = cfg.getTemplate("purchaser_request.ftl.html");
+        Template template = cfg.getTemplate("purchaser/purchaser_request.ftl.html");
 
         Map<String, Object> data = new HashMap<>();
         data.put("categories", categories);
