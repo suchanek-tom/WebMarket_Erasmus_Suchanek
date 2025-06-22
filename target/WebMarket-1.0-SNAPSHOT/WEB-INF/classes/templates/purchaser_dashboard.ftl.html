@@ -1,0 +1,28 @@
+<h2>Purchaser Dashboard</h2>
+
+<p>Welcome, ${username}!</p>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Category ID</th>
+            <th>Notes</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <#list requests as req>
+        <tr>
+            <td>${req.id}</td>
+            <td>${req.categoryId}</td>
+            <td>${req.notes}</td>
+            <td>${req.status}</td>
+        </tr>
+        </#list>
+    </tbody>
+</table>
+
+<p><a href="/WebMarket/purchaser/request">Create New Request</a></p>
+
+<a href="/WebMarket/logout">Logout</a>

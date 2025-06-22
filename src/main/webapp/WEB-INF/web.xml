@@ -1,0 +1,12 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         version="4.0"
+         metadata-complete="false">
+
+  <display-name>WebMarket</display-name>
+
+v<servlet>
+    <servlet-name>AuthController</servlet-name>
+    <servlet-class>com.webmarket.controller.AuthController</servlet-class>
+</servlet>
+
+</web-app>
