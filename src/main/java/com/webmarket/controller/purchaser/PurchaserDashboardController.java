@@ -11,9 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @WebServlet("/purchaser/dashboard")
 public class PurchaserDashboardController extends HttpServlet {
@@ -24,11 +22,9 @@ public class PurchaserDashboardController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession();
-
-        // Ověř, že uživatel je přihlášen
-        if (session.getAttribute("user_id") == null || session.getAttribute("username") == null) {
-            response.sendRedirect("/WebMarket/login");
+        HttpSession session = request.getSession(false);
+        if (session == null || !"purchaser".equals(session.getAttribute("role"))) {
+            response.sendRedirect(request.getContextPath() + "/login?error=unauthorized");
             return;
         }
 
@@ -45,8 +41,7 @@ public class PurchaserDashboardController extends HttpServlet {
         data.put("username", username);
 
         response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-        try {
+        try (PrintWriter out = response.getWriter()) {
             template.process(data, out);
         } catch (Exception e) {
             throw new ServletException("Freemarker error", e);

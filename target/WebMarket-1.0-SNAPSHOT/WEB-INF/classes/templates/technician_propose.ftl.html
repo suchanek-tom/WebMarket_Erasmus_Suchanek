@@ -1,0 +1,18 @@
+<h2>Submit Proposal</h2>
+
+<form method="post" action="/WebMarket/technician/propose">
+    <input type="hidden" name="requestId" value="${requestId}" />
+
+    <label>Features:</label><br>
+    <textarea name="features" rows="4" cols="50" required></textarea><br><br>
+
+    <label>Price (EUR):</label><br>
+    <input type="number" name="price" step="0.01" required><br><br>
+
+    <label>Date:</label><br>
+    <input type="date" name="date" required><br><br>
+
+    <button type="submit">Submit</button>
+</form>
+
+<a href="/WebMarket/technician/dashboard">Back to Dashboard</a>

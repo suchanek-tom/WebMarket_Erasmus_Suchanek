@@ -1,0 +1,24 @@
+<h2>Proposals for Request #${requestId}</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Technician</th>
+            <th>Features</th>
+            <th>Price</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <#list proposals as proposal>
+        <tr>
+            <td>${proposal.technicianName}</td>
+            <td>${proposal.features}</td>
+            <td>${proposal.price}</td>
+            <td>${proposal.date}</td>
+        </tr>
+        </#list>
+    </tbody>
+</table>
+
+<a href="javascript:history.back()">Back</a>

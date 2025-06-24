@@ -24,6 +24,13 @@ public class AdminController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // ✅ Zabezpečení přístupu
+        HttpSession session = request.getSession(false);
+        if (session == null || !"admin".equals(session.getAttribute("role"))) {
+            response.sendRedirect(request.getContextPath() + "/login?error=unauthorized");
+            return;
+        }
+
         List<PurchaseRequest> requests = requestDAO.findAllWithCategoryAndUser();
 
         Configuration cfg = FreemarkerConfig.getConfig();
@@ -31,10 +38,10 @@ public class AdminController extends HttpServlet {
 
         Map<String, Object> data = new HashMap<>();
         data.put("requests", requests);
+        data.put("username", session.getAttribute("username"));
 
         response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-        try {
+        try (PrintWriter out = response.getWriter()) {
             template.process(data, out);
         } catch (Exception e) {
             throw new ServletException("Freemarker rendering error", e);
@@ -44,6 +51,13 @@ public class AdminController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+
+        // ✅ Zabezpečení přístupu
+        HttpSession session = request.getSession(false);
+        if (session == null || !"admin".equals(session.getAttribute("role"))) {
+            response.sendRedirect(request.getContextPath() + "/login?error=unauthorized");
+            return;
+        }
 
         String action = request.getParameter("action");
         int requestId = Integer.parseInt(request.getParameter("requestId"));
@@ -60,6 +74,6 @@ public class AdminController extends HttpServlet {
                 break;
         }
 
-        response.sendRedirect("dashboard");
+        response.sendRedirect(request.getContextPath() + "/admin/dashboard");
     }
 }

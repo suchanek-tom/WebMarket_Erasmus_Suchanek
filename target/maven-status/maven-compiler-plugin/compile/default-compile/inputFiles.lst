@@ -1,6 +1,7 @@
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\DashboardController.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\dao\CategoryDAO.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\model\PurchaseRequest.java
+C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\ViewProposalsController.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\model\PurchaseProposal.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\model\Category.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\admin\AdminController.java
@@ -10,13 +11,15 @@ C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmark
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\webmarket\resources\JakartaEE8Resource.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\purchaser\PurchaserRequestController.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\technician\TechnicianRejectController.java
+C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\technician\TechnicianController.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\model\Feature.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\purchaser\PurchaserDashboardController.java
+C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\NotFoundController.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\utils\DBUtil.java
+C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\dao\PurchaseProposalDAO.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\dao\UserDAO.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\model\User.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\dao\PurchaseRequestDAO.java
-C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\technician\TechnicianDashboardController.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\ProfileController.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\model\Notification.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\utils\FreemarkerConfig.java

@@ -145,5 +145,32 @@ public class PurchaseRequestDAO {
         e.printStackTrace();
     }
    }
+    public List<PurchaseRequest> findApprovedWithCategory() {
+    List<PurchaseRequest> list = new ArrayList<>();
+    String sql = "SELECT pr.*, c.name AS category_name " +
+                 "FROM purchase_requests pr " +
+                 "JOIN categories c ON pr.category_id = c.id " +
+                 "WHERE pr.status = 'approved'";
 
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+
+        while (rs.next()) {
+            PurchaseRequest pr = new PurchaseRequest();
+            pr.setId(rs.getInt("id"));
+            pr.setCategoryId(rs.getInt("category_id"));
+            pr.setCategoryName(rs.getString("category_name"));
+            pr.setPurchaserId(rs.getInt("purchaser_id"));
+            pr.setNotes(rs.getString("notes"));
+            pr.setStatus(rs.getString("status"));
+            list.add(pr);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
 }
