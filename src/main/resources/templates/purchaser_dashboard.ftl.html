@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <title>Purchaser Dashboard</title>
     <link rel="stylesheet" href="/WebMarket/style/main.css">
+    <link rel="icon" href="/WebMarket/favicon.ico" type="image/x-icon">
 </head>
 <body>
 
-<header>
-    <h1>Purchaser Dashboard</h1>
-    <nav>
-        <a href="/WebMarket/purchaser/request">Create Request</a>
-        <a href="/WebMarket/logout">Logout</a>
-    </nav>
-</header>
+<#include "outline_header.ftl.html">
 
 <main>
     <#if message??>
@@ -46,8 +41,7 @@
     </div>
 </main>
 
-<footer>
-    &copy; 2025 WebMarket — Tomas Suchanek
-</footer>
+<#include "outline_footer.ftl.html">
+
 </body>
 </html>

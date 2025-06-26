@@ -4,15 +4,11 @@
     <meta charset="UTF-8">
     <title>Technician Dashboard</title>
     <link rel="stylesheet" href="/WebMarket/style/main.css">
+    <link rel="icon" href="/WebMarket/favicon.ico" type="image/x-icon">
 </head>
 <body>
 
-<header>
-    <h1>Technician Dashboard</h1>
-    <nav>
-        <a href="/WebMarket/logout">Logout</a>
-    </nav>
-</header>
+<#include "outline_header.ftl.html">
 
 <main>
     <#if message??>
@@ -54,8 +50,7 @@
     </div>
 </main>
 
-<footer>
-    &copy; 2025 WebMarket — Tomas Suchanek
-</footer>
+<#include "outline_footer.ftl.html">
+
 </body>
 </html>
