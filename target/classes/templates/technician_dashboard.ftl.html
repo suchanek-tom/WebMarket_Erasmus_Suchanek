@@ -1,40 +1,61 @@
-<h2>Technician Dashboard</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Technician Dashboard</title>
+    <link rel="stylesheet" href="/WebMarket/style/main.css">
+</head>
+<body>
 
-<p>Welcome, technician!</p>
+<header>
+    <h1>Technician Dashboard</h1>
+    <nav>
+        <a href="/WebMarket/logout">Logout</a>
+    </nav>
+</header>
 
-<form method="get" action="/WebMarket/view-proposals">
-    <input type="hidden" name="requestId" value="${req.id}" />
-    <button type="submit">View Proposals</button>
-</form>
+<main>
+    <#if message??>
+        <div class="alert-success">${message}</div>
+    </#if>
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Category</th>
-            <th>Notes</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <#list requests as req>
-        <tr>
-            <td>${req.id}</td>
-            <td>${req.categoryName}</td>
-            <td>${req.notes}</td>
-            <td>
-                <form action="/WebMarket/technician/approve" method="post" style="display:inline;">
-                    <input type="hidden" name="id" value="${req.id}">
-                    <button type="submit">Approve</button>
-                </form>
-                <form action="/WebMarket/technician/reject" method="post" style="display:inline;">
-                    <input type="hidden" name="id" value="${req.id}">
-                    <button type="submit">Reject</button>
-                </form>
-            </td>
-        </tr>
-        </#list>
-    </tbody>
-</table>
+    <div class="card">
+        <p>Welcome, <strong>${username}</strong>!</p>
 
-<a href="/WebMarket/logout">Logout</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Category</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <#list requests as req>
+                <tr>
+                    <td>${req.id}</td>
+                    <td>${req.categoryName}</td>
+                    <td>${req.notes}</td>
+                    <td>
+                        <form method="get" action="/WebMarket/technician/propose" style="display:inline;">
+                            <input type="hidden" name="requestId" value="${req.id}">
+                            <button type="submit">Propose</button>
+                        </form>
+                        <form method="get" action="/WebMarket/view-proposals" style="display:inline;">
+                            <input type="hidden" name="requestId" value="${req.id}">
+                            <button type="submit">View Proposals</button>
+                        </form>
+                    </td>
+                </tr>
+                </#list>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    &copy; 2025 WebMarket — Tomas Suchanek
+</footer>
+</body>
+</html>

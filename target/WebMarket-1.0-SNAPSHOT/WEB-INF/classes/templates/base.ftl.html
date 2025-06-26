@@ -1,20 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>WebMarket</title>
-    <link rel="stylesheet" href="/WebMarket/style/style.css" />
+    <meta charset="UTF-8">
+    <title>${title!}</title>
+    <link rel="stylesheet" href="/style/main.css">
 </head>
 <body>
-    <header>
-        <h1>WebMarket</h1>
-        <nav>
-            <a href="/WebMarket/profile">Profile</a> |
-            <a href="/WebMarket/logout">Logout</a>
-        </nav>
-    </header>
-    <main>
-        <@body/>
-    </main>
+<header>
+    <h1>WebMarket</h1>
+    <nav>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
+
+<main>
+    <#nested>
+</main>
+
+<footer>
+    &copy; 2025 WebMarket — Tomáš Suchanek
+</footer>
 </body>
 </html>
-</#macro>

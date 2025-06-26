@@ -39,6 +39,12 @@ public class PurchaserDashboardController extends HttpServlet {
         Map<String, Object> data = new HashMap<>();
         data.put("requests", requests);
         data.put("username", username);
+        
+        String message = (String) session.getAttribute("message");
+        if (message != null) {
+            data.put("message", message);
+            session.removeAttribute("message");
+        }
 
         response.setContentType("text/html");
         try (PrintWriter out = response.getWriter()) {

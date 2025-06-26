@@ -39,6 +39,12 @@ public class AdminController extends HttpServlet {
         Map<String, Object> data = new HashMap<>();
         data.put("requests", requests);
         data.put("username", session.getAttribute("username"));
+        
+        String message = (String) session.getAttribute("message");
+        if (message != null) {
+            data.put("message", message);
+            session.removeAttribute("message");
+        }
 
         response.setContentType("text/html");
         try (PrintWriter out = response.getWriter()) {
@@ -47,33 +53,39 @@ public class AdminController extends HttpServlet {
             throw new ServletException("Freemarker rendering error", e);
         }
     }
-
+    
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
 
-        // ✅ Zabezpečení přístupu
-        HttpSession session = request.getSession(false);
-        if (session == null || !"admin".equals(session.getAttribute("role"))) {
-            response.sendRedirect(request.getContextPath() + "/login?error=unauthorized");
-            return;
-        }
-
-        String action = request.getParameter("action");
-        int requestId = Integer.parseInt(request.getParameter("requestId"));
-
-        switch (action) {
-            case "approve":
-                requestDAO.updateStatus(requestId, "approved");
-                break;
-            case "reject":
-                requestDAO.updateStatus(requestId, "rejected");
-                break;
-            case "delete":
-                requestDAO.deleteById(requestId);
-                break;
-        }
-
-        response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+    HttpSession session = request.getSession(false);
+    if (session == null || !"admin".equals(session.getAttribute("role"))) {
+        response.sendRedirect(request.getContextPath() + "/login?error=unauthorized");
+        return;
     }
+
+    String action = request.getParameter("action");
+    int requestId = Integer.parseInt(request.getParameter("requestId"));
+
+    String message = null;
+
+    switch (action) {
+        case "approve":
+            requestDAO.updateStatus(requestId, "approved");
+            message = "Request #" + requestId + " was approved.";
+            break;
+        case "reject":
+            requestDAO.updateStatus(requestId, "rejected");
+            message = "Request #" + requestId + " was rejected.";
+            break;
+        case "delete":
+            requestDAO.deleteById(requestId);
+            message = "Request #" + requestId + " was deleted.";
+            break;
+    }
+
+    session.setAttribute("message", message);
+    response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+}
+
 }

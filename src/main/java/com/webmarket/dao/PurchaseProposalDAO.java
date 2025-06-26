@@ -9,7 +9,6 @@ import java.util.List;
 
 public class PurchaseProposalDAO {
 
-    // Vloží nový návrh (proposal) do databáze
     public void insert(PurchaseProposal proposal) {
         String sql = "INSERT INTO PurchaseProposal (request_id, technician_id, features, price, date) VALUES (?, ?, ?, ?, ?)";
 
@@ -29,7 +28,6 @@ public class PurchaseProposalDAO {
         }
     }
 
-    // Vrátí všechny návrhy pro danou žádost podle jejího ID
     public List<PurchaseProposal> findByRequestId(int requestId) {
         List<PurchaseProposal> list = new ArrayList<>();
         String sql = "SELECT pp.*, u.username AS technician_name " +
@@ -60,5 +58,26 @@ public class PurchaseProposalDAO {
         }
 
         return list;
+    }
+
+    public boolean existsProposal(int requestId, int technicianId) {
+        String sql = "SELECT COUNT(*) FROM PurchaseProposal WHERE request_id = ? AND technician_id = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, requestId);
+            stmt.setInt(2, technicianId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

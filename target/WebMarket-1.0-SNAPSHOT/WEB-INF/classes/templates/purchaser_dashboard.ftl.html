@@ -1,28 +1,53 @@
-<h2>Purchaser Dashboard</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Purchaser Dashboard</title>
+    <link rel="stylesheet" href="/WebMarket/style/main.css">
+</head>
+<body>
 
-<p>Welcome, ${username}!</p>
+<header>
+    <h1>Purchaser Dashboard</h1>
+    <nav>
+        <a href="/WebMarket/purchaser/request">Create Request</a>
+        <a href="/WebMarket/logout">Logout</a>
+    </nav>
+</header>
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Category ID</th>
-            <th>Notes</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        <#list requests as req>
-        <tr>
-            <td>${req.id}</td>
-            <td>${req.categoryId}</td>
-            <td>${req.notes}</td>
-            <td>${req.status}</td>
-        </tr>
-        </#list>
-    </tbody>
-</table>
+<main>
+    <#if message??>
+        <div class="alert-success">${message}</div>
+    </#if>
 
-<p><a href="/WebMarket/purchaser/request">Create New Request</a></p>
+    <div class="card">
+        <p>Welcome, <strong>${username}</strong>!</p>
 
-<a href="/WebMarket/logout">Logout</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Category ID</th>
+                    <th>Notes</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <#list requests as req>
+                <tr>
+                    <td>${req.id}</td>
+                    <td>${req.categoryId}</td>
+                    <td>${req.notes}</td>
+                    <td>${req.status}</td>
+                </tr>
+                </#list>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    &copy; 2025 WebMarket — Tomas Suchanek
+</footer>
+</body>
+</html>

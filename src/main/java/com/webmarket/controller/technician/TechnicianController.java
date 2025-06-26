@@ -55,6 +55,12 @@ public class TechnicianController extends HttpServlet {
         data.put("requests", pendingRequests);
         data.put("username", session.getAttribute("username"));
 
+        String message = (String) session.getAttribute("message");
+        if (message != null) {
+            data.put("message", message);
+            session.removeAttribute("message");
+        }
+
         response.setContentType("text/html");
         try (PrintWriter out = response.getWriter()) {
             template.process(data, out);
@@ -102,6 +108,13 @@ public class TechnicianController extends HttpServlet {
 
             int technicianId = (int) session.getAttribute("user_id");
 
+            // ✅ Kontrola duplicitního návrhu
+            if (proposalDAO.existsProposal(requestId, technicianId)) {
+                session.setAttribute("message", "You have already submitted a proposal for this request.");
+                response.sendRedirect(request.getContextPath() + "/technician/dashboard");
+                return;
+            }
+
             PurchaseProposal proposal = new PurchaseProposal();
             proposal.setRequestId(requestId);
             proposal.setTechnicianId(technicianId);
@@ -112,7 +125,9 @@ public class TechnicianController extends HttpServlet {
             proposalDAO.insert(proposal);
             requestDAO.updateStatus(requestId, "proposed");
 
+            session.setAttribute("message", "Proposal submitted for request #" + requestId + ".");
             response.sendRedirect(request.getContextPath() + "/technician/dashboard");
+
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }

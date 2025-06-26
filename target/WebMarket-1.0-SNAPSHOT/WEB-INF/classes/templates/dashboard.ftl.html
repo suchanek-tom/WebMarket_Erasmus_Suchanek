@@ -3,20 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="/WebMarket/style/main.css">
 </head>
 <body>
 <header>
     <h1>Welcome, ${username}!</h1>
     <nav>
-        <a href="dashboard">Dashboard</a>
-        <a href="profile">Profile</a>
-        <a href="logout">Logout</a>
+        <a href="/WebMarket/dashboard">Dashboard</a>
+        <a href="/WebMarket/profile">Profile</a>
+        <a href="/WebMarket/logout">Logout</a>
     </nav>
 </header>
+
 <main>
-    <h2>Dashboard Overview</h2>
-    <p>This is your admin dashboard.</p>
+    <#if message??>
+        <div class="alert-success">${message}</div>
+    </#if>
+    <div class="card">
+        <h2>Dashboard Overview</h2>
+
+        <#if role == "admin">
+            <p>You are logged in as <strong>Administrator</strong>.</p>
+            <h3>All Purchase Requests</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Purchaser</th>
+                        <th>Notes</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <#list requests as req>
+                        <tr>
+                            <td>${req.id}</td>
+                            <td>${req.categoryName}</td>
+                            <td>${req.purchaserName}</td>
+                            <td>${req.notes}</td>
+                            <td>${req.status}</td>
+                            <td>
+                                <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
+                                    <input type="hidden" name="requestId" value="${req.id}">
+                                    <input type="hidden" name="action" value="approve">
+                                    <button type="submit">Approve</button>
+                                </form>
+                                <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
+                                    <input type="hidden" name="requestId" value="${req.id}">
+                                    <input type="hidden" name="action" value="reject">
+                                    <button type="submit">Reject</button>
+                                </form>
+                                <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
+                                    <input type="hidden" name="requestId" value="${req.id}">
+                                    <input type="hidden" name="action" value="delete">
+                                    <button type="submit" class="danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </#list>
+                </tbody>
+            </table>
+
+        <#elseif role == "technician">
+            <p>You are logged in as <strong>Technician</strong>.</p>
+            <h3>Pending Requests</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Notes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <#list requests as req>
+                        <tr>
+                            <td>${req.id}</td>
+                            <td>${req.categoryName}</td>
+                            <td>${req.notes}</td>
+                            <td>
+                                <form method="get" action="/WebMarket/technician/propose">
+                                    <input type="hidden" name="requestId" value="${req.id}">
+                                    <button type="submit">Propose</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </#list>
+                </tbody>
+            </table>
+
+        <#elseif role == "purchaser">
+            <p>You are logged in as <strong>Purchaser</strong>.</p>
+            <h3>Your Purchase Requests</h3>
+            <button onclick="location.href='/WebMarket/purchaser/request'">Submit New Request</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Notes</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <#list requests as req>
+                        <tr>
+                            <td>${req.id}</td>
+                            <td>${req.categoryName}</td>
+                            <td>${req.notes}</td>
+                            <td>${req.status}</td>
+                        </tr>
+                    </#list>
+                </tbody>
+            </table>
+        </#if>
+    </div>
 </main>
+
+<#include "outline_footer.ftl.html">
 </body>
 </html>

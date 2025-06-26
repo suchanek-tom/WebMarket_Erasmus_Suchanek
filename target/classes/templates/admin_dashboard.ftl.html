@@ -3,60 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/src/main/webapp/style/main.css">
+    <link rel="stylesheet" href="/WebMarket/style/main.css">
 </head>
 <body>
-<header>
-    <h1>Admin Dashboard</h1>
-    <nav>
-        <a href="/WebMarket/logout">Logout</a>
-    </nav>
-</header>
 
+    <#include "outline_header.ftl.html">
+    
 <main>
-    <h2>All Purchase Requests</h2>
 
+    <div class="card">
+        <h2>All Purchase Requests</h2>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Category</th>
-                <th>Purchaser</th>
-                <th>Notes</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <#list requests as req>
+        <table>
+            <thead>
                 <tr>
-                    <td>${req.id}</td>
-                    <td>${req.categoryName}</td>
-                    <td>${req.purchaserName}</td>
-                    <td>${req.notes}</td>
-                    <td>${req.status}</td>
-                    <td>
-                        <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
-                            <input type="hidden" name="requestId" value="${req.id}">
-                            <input type="hidden" name="action" value="approve">
-                            <button type="submit">Approve</button>
-                        </form>
-                        <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
-                            <input type="hidden" name="requestId" value="${req.id}">
-                            <input type="hidden" name="action" value="reject">
-                            <button type="submit">Reject</button>
-                        </form>
-                        <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
-                            <input type="hidden" name="requestId" value="${req.id}">
-                            <input type="hidden" name="action" value="delete">
-                            <button type="submit" style="color:red;">Delete</button>
-                        </form>
-                    </td>
+                    <th>ID</th>
+                    <th>Category</th>
+                    <th>Purchaser</th>
+                    <th>Notes</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
-            </#list>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <#list requests as req>
+                    <tr>
+                        <td>${req.id}</td>
+                        <td>${req.categoryName}</td>
+                        <td>${req.purchaserName}</td>
+                        <td>${req.notes}</td>
+                        <td>${req.status}</td>
+                        <td>
+                            <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
+                                <input type="hidden" name="requestId" value="${req.id}">
+                                <input type="hidden" name="action" value="approve">
+                                <button type="submit">Approve</button>
+                            </form>
+                            <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
+                                <input type="hidden" name="requestId" value="${req.id}">
+                                <input type="hidden" name="action" value="reject">
+                                <button type="submit">Reject</button>
+                            </form>
+                            <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
+                                <input type="hidden" name="requestId" value="${req.id}">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </#list>
+            </tbody>
+        </table>
+    </div>
 </main>
+
+<#include "outline_footer.ftl.html">
 </body>
 </html>
