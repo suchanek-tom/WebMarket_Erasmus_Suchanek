@@ -1,18 +1,121 @@
-<h2>Submit Proposal</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Proposal</title>
+    <link rel="stylesheet" href="/WebMarket/style/main.css">
+</head>
+<body>
 
-<form method="post" action="/WebMarket/technician/propose">
-    <input type="hidden" name="requestId" value="${requestId}" />
+<header>
+    <h1>Submit Proposal for Request #${requestId}</h1>
+    <nav>
+        <a href="/WebMarket/technician/dashboard">Dashboard</a>
+        <a href="/WebMarket/logout">Logout</a>
+    </nav>
+</header>
 
-    <label>Features:</label><br>
-    <textarea name="features" rows="4" cols="50" required></textarea><br><br>
+<main>
+    <#if message??>
+        <div class="alert success">${message}</div>
+    </#if>
 
-    <label>Price (EUR):</label><br>
-    <input type="number" name="price" step="0.01" required><br><br>
+    <form method="post" action="/WebMarket/technician/propose" class="form-card">
+        <input type="hidden" name="requestId" value="${requestId}" />
 
-    <label>Date:</label><br>
-    <input type="date" name="date" required><br><br>
+        <label for="features">Features:</label>
+        <textarea name="features" id="features" rows="4" required></textarea>
 
-    <button type="submit">Submit</button>
-</form>
+        <label for="price">Price (EUR):</label>
+        <input type="number" name="price" id="price" step="0.01" required>
 
-<a href="/WebMarket/technician/dashboard">Back to Dashboard</a>
+        <label for="date">Delivery Date:</label>
+        <input type="date" name="date" id="date" required>
+
+        <button type="submit">Submit Proposal</button>
+    </form>
+
+    <p><a href="/WebMarket/technician/dashboard">⬅ Back to Dashboard</a></p>
+</main>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #004080;
+        color: white;
+        padding: 1em;
+    }
+
+    header h1 {
+        margin: 0;
+    }
+
+    nav {
+        margin-top: 0.5em;
+    }
+
+    nav a {
+        color: white;
+        margin-right: 1em;
+        text-decoration: none;
+    }
+
+    main {
+        padding: 2em;
+    }
+
+    .alert.success {
+        background-color: #ddffdd;
+        border-left: 4px solid #4CAF50;
+        padding: 10px;
+        margin-bottom: 1em;
+    }
+
+    .form-card {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 1.5em;
+        max-width: 500px;
+        border-radius: 5px;
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-top: 1em;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    textarea {
+        width: 100%;
+        padding: 0.5em;
+        margin-top: 0.5em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    button {
+        margin-top: 1.5em;
+        padding: 0.7em 1.5em;
+        background-color: #004080;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #003366;
+    }
+</style>
+
+</body>
+</html>

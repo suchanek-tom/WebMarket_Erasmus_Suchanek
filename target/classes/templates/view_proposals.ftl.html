@@ -1,24 +1,82 @@
-<h2>Proposals for Request #${requestId}</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Proposals for Request #${requestId}</title>
+    <link rel="stylesheet" href="/WebMarket/style/main.css">
+</head>
+<body>
+<header>
+    <h1>Proposals for Request #${requestId}</h1>
+    <nav>
+        <a href="/WebMarket/dashboard">Dashboard</a>
+        <a href="/WebMarket/logout">Logout</a>
+    </nav>
+</header>
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>Technician</th>
-            <th>Features</th>
-            <th>Price</th>
-            <th>Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        <#list proposals as proposal>
-        <tr>
-            <td>${proposal.technicianName}</td>
-            <td>${proposal.features}</td>
-            <td>${proposal.price}</td>
-            <td>${proposal.date}</td>
-        </tr>
-        </#list>
-    </tbody>
-</table>
+<main>
+    <#if message??>
+        <div class="alert success">${message}</div>
+    </#if>
 
-<a href="javascript:history.back()">Back</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Technician</th>
+                <th>Features</th>
+                <th>Price</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <#list proposals as proposal>
+                <tr <#if proposal.isWinner?? && proposal.isWinner>class="highlight"</#if>>
+                    <td>${proposal.technicianName}</td>
+                    <td>${proposal.features}</td>
+                    <td>${proposal.price}</td>
+                    <td>${proposal.date}</td>
+                    <td>
+                        <#if !(proposal.isWinner?? && proposal.isWinner)>
+                            <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
+                                <input type="hidden" name="action" value="selectWinner">
+                                <input type="hidden" name="requestId" value="${requestId}">
+                                <input type="hidden" name="proposalId" value="${proposal.id}">
+                                <button type="submit">Select as Winner</button>
+                            </form>
+                        <#else>
+                            <strong>✔ Winner</strong>
+                        </#if>
+                    </td>
+                </tr>
+            </#list>
+        </tbody>
+    </table>
+
+    <p><a href="javascript:history.back()">⬅ Back</a></p>
+</main>
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 0.5em;
+        border: 1px solid #ccc;
+    }
+
+    .alert.success {
+        background-color: #ddffdd;
+        border-left: 4px solid #4CAF50;
+        padding: 10px;
+        margin-bottom: 1em;
+    }
+
+    .highlight {
+        background-color: #e6ffe6;
+    }
+</style>
+</body>
+</html>

@@ -50,6 +50,7 @@ public class PurchaseProposalDAO {
                 proposal.setFeatures(rs.getString("features"));
                 proposal.setPrice(rs.getDouble("price"));
                 proposal.setDate(rs.getDate("date").toLocalDate());
+                proposal.setWinner(rs.getBoolean("is_winner"));
                 list.add(proposal);
             }
 
@@ -79,5 +80,22 @@ public class PurchaseProposalDAO {
         }
 
         return false;
+    }
+
+    public boolean markAsWinner(int proposalId) {
+        String sql = "UPDATE PurchaseProposal SET is_winner = 1 WHERE id = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, proposalId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ✅ Alias nebo veřejně přístupná alternativa:
+    public boolean setAsWinner(int proposalId) {
+        return markAsWinner(proposalId);
     }
 }

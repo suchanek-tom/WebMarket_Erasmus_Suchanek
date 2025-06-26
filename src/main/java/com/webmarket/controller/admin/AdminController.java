@@ -5,6 +5,7 @@ import com.webmarket.model.PurchaseRequest;
 import com.webmarket.utils.FreemarkerConfig;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import com.webmarket.dao.PurchaseProposalDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -55,37 +56,56 @@ public class AdminController extends HttpServlet {
     }
     
     @Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
-    HttpSession session = request.getSession(false);
-    if (session == null || !"admin".equals(session.getAttribute("role"))) {
-        response.sendRedirect(request.getContextPath() + "/login?error=unauthorized");
-        return;
+        HttpSession session = request.getSession(false);
+        if (session == null || !"admin".equals(session.getAttribute("role"))) {
+            response.sendRedirect(request.getContextPath() + "/login?error=unauthorized");
+            return;
+        }
+
+        String action = request.getParameter("action");
+        String message = null;
+
+        try {
+            int requestId = Integer.parseInt(request.getParameter("requestId"));
+
+            PurchaseProposalDAO proposalDAO = new PurchaseProposalDAO();
+
+            switch (action) {
+                case "approve":
+                    requestDAO.updateStatus(requestId, "approved");
+                    message = "Request #" + requestId + " was approved.";
+                    break;
+                case "reject":
+                    requestDAO.updateStatus(requestId, "rejected");
+                    message = "Request #" + requestId + " was rejected.";
+                    break;
+                case "delete":
+                    requestDAO.deleteById(requestId);
+                    message = "Request #"
+                     + requestId + " was deleted.";
+                    break;
+                case "selectWinner":
+                    int proposalId = Integer.parseInt(request.getParameter("proposalId"));
+                    if (proposalDAO.markAsWinner(proposalId)) {
+                        requestDAO.updateStatus(requestId, "winner_selected");
+                        message = "Proposal #" + proposalId + " was marked as the winner.";
+                    } else {
+                        message = "Failed to mark proposal as winner.";
+                    }
+                    break;
+                default:
+                    message = "Unknown action: " + action;
+                    break;
+            }
+        } catch (NumberFormatException e) {
+            message = "Invalid ID format.";
+        }
+
+        session.setAttribute("message", message);
+        response.sendRedirect(request.getContextPath() + "/admin/dashboard");
     }
-
-    String action = request.getParameter("action");
-    int requestId = Integer.parseInt(request.getParameter("requestId"));
-
-    String message = null;
-
-    switch (action) {
-        case "approve":
-            requestDAO.updateStatus(requestId, "approved");
-            message = "Request #" + requestId + " was approved.";
-            break;
-        case "reject":
-            requestDAO.updateStatus(requestId, "rejected");
-            message = "Request #" + requestId + " was rejected.";
-            break;
-        case "delete":
-            requestDAO.deleteById(requestId);
-            message = "Request #" + requestId + " was deleted.";
-            break;
-    }
-
-    session.setAttribute("message", message);
-    response.sendRedirect(request.getContextPath() + "/admin/dashboard");
-}
 
 }

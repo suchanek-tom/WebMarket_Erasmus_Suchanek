@@ -1,6 +1,7 @@
-package com.webmarket.controller;
+package com.webmarket.controller;   
 
 import com.webmarket.dao.PurchaseProposalDAO;
+import com.webmarket.dao.PurchaseRequestDAO;
 import com.webmarket.model.PurchaseProposal;
 import com.webmarket.utils.FreemarkerConfig;
 import freemarker.template.Configuration;
@@ -19,6 +20,7 @@ import java.util.Map;
 public class ViewProposalsController extends HttpServlet {
 
     private final PurchaseProposalDAO proposalDAO = new PurchaseProposalDAO();
+    private final PurchaseRequestDAO requestDAO = new PurchaseRequestDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -34,12 +36,40 @@ public class ViewProposalsController extends HttpServlet {
         data.put("proposals", proposals);
         data.put("requestId", requestId);
 
+        String message = (String) request.getSession().getAttribute("message");
+        if (message != null) {
+            data.put("message", message);
+            request.getSession().removeAttribute("message");
+        }
+
         response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-        try {
+        try (PrintWriter out = response.getWriter()) {
             template.process(data, out);
         } catch (Exception e) {
             throw new ServletException("Freemarker error", e);
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("role") == null) {
+            response.sendRedirect(request.getContextPath() + "/login?error=unauthorized");
+            return;
+        }
+
+        int requestId = Integer.parseInt(request.getParameter("requestId"));
+        int proposalId = Integer.parseInt(request.getParameter("proposalId"));
+
+        // Označí návrh jako vítězný
+        proposalDAO.setAsWinner(proposalId);
+
+        // Nastaví stav žádosti jako "accepted"
+        requestDAO.updateStatus(requestId, "accepted");
+
+        session.setAttribute("message", "Proposal #" + proposalId + " was accepted successfully.");
+        response.sendRedirect(request.getContextPath() + "/view-proposals?requestId=" + requestId);
     }
 }

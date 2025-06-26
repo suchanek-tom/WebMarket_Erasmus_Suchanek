@@ -11,6 +11,7 @@ public class PurchaseProposal {
     private String features;
     private double price;
     private LocalDate date;
+    private boolean isWinner;
 
     // Gettery a settery
     public int getId() {
@@ -67,5 +68,13 @@ public class PurchaseProposal {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+    
+    public boolean isWinner() {
+        return isWinner;
+    }
+    
+    public void setWinner(boolean isWinner) {
+        this.isWinner = isWinner;
     }
 }
