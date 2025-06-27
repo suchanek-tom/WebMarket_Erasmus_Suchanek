@@ -29,7 +29,7 @@ public class PurchaserRequestActionController extends HttpServlet {
         int requestId = Integer.parseInt(request.getParameter("requestId"));
 
         if ("accept".equals(action)) {
-            boolean marked = proposalDAO.markAsWinner(proposalId);
+            boolean marked = proposalDAO.setWinner(proposalId, requestId);
             boolean updated = requestDAO.updateStatus(requestId, "completed");
 
             if (marked && updated) {

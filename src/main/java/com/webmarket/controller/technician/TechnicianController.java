@@ -33,11 +33,10 @@ public class TechnicianController extends HttpServlet {
         }
 
         String path = request.getPathInfo();
-
         if (path == null || path.equals("/") || path.equals("/dashboard")) {
             showDashboard(request, response, session);
         } else if (path.equals("/propose")) {
-            showProposalForm(request, response);
+            showProposalForm(request, response, session);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -45,7 +44,6 @@ public class TechnicianController extends HttpServlet {
 
     private void showDashboard(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
-
         int technicianId = (int) session.getAttribute("user_id");
 
         List<PurchaseRequest> unassignedRequests = requestDAO.findUnassignedRequests();
@@ -73,9 +71,35 @@ public class TechnicianController extends HttpServlet {
         }
     }
 
-    private void showProposalForm(HttpServletRequest request, HttpServletResponse response)
+    private void showProposalForm(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
-        int requestId = Integer.parseInt(request.getParameter("requestId"));
+        // Ověření existence parametru a validace
+        String reqIdStr = request.getParameter("requestId");
+        if (reqIdStr == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing requestId parameter");
+            return;
+        }
+
+        int requestId;
+        try {
+            requestId = Integer.parseInt(reqIdStr);
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid requestId parameter");
+            return;
+        }
+
+        int technicianId = (int) session.getAttribute("user_id");
+
+        // Kontrola, zda technik patří k danému requestu nebo zda je request nepřidělený (podle pravidel)
+        PurchaseRequest pr = requestDAO.findById(requestId);
+        if (pr == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Purchase request not found");
+            return;
+        }
+        if (pr.getAssignedTechnicianId() != technicianId) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not assigned to this request");
+            return;
+        }
 
         Configuration cfg = FreemarkerConfig.getConfig();
         Template template = cfg.getTemplate("technician_propose.ftl.html");
@@ -104,49 +128,64 @@ public class TechnicianController extends HttpServlet {
         String path = request.getPathInfo();
 
         if ("/propose".equals(path)) {
-            int requestId = Integer.parseInt(request.getParameter("requestId"));
-            String features = request.getParameter("features");
-            double price = Double.parseDouble(request.getParameter("price"));
-            LocalDate date = LocalDate.parse(request.getParameter("date"));
-
-            int technicianId = (int) session.getAttribute("user_id");
-
-            if (proposalDAO.existsProposal(requestId, technicianId)) {
-                session.setAttribute("message", "You have already submitted a proposal for this request.");
-                response.sendRedirect(request.getContextPath() + "/technician/dashboard");
-                return;
-            }
-
-            PurchaseProposal proposal = new PurchaseProposal();
-            proposal.setRequestId(requestId);
-            proposal.setTechnicianId(technicianId);
-            proposal.setFeatures(features);
-            proposal.setPrice(price);
-            proposal.setDate(date);
-
-            proposalDAO.insert(proposal);
-            requestDAO.updateStatus(requestId, "proposed");
-
-            session.setAttribute("message", "Proposal submitted for request #" + requestId + ".");
-            response.sendRedirect(request.getContextPath() + "/technician/dashboard");
-
+            handleProposalPost(request, response, session);
         } else if ("/take".equals(path)) {
-            int requestId = Integer.parseInt(request.getParameter("requestId"));
-            int technicianId = (int) session.getAttribute("user_id");
-
-            boolean success = requestDAO.assignTechnician(requestId, technicianId);
-
-            if (success) {
-                session.setAttribute("message", "Request #" + requestId + " has been assigned to you.");
-            } else {
-                session.setAttribute("message", "Failed to assign request #" + requestId + ".");
-            }
-
-            response.sendRedirect(request.getContextPath() + "/technician/dashboard");
-
+            handleTakePost(request, response, session);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
-}
 
+    private void handleProposalPost(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws IOException {
+        int requestId = Integer.parseInt(request.getParameter("requestId"));
+        String features = request.getParameter("features");
+        double price = Double.parseDouble(request.getParameter("price"));
+        LocalDate date = LocalDate.parse(request.getParameter("date"));
+
+        int technicianId = (int) session.getAttribute("user_id");
+
+        // Kontrola, zda technik patří k danému requestu
+        PurchaseRequest pr = requestDAO.findById(requestId);
+        if (pr == null || pr.getAssignedTechnicianId() != technicianId) {
+            session.setAttribute("message", "You are not assigned to this request.");
+            response.sendRedirect(request.getContextPath() + "/technician/dashboard");
+            return;
+        }
+
+        if (proposalDAO.existsProposal(requestId, technicianId)) {
+            session.setAttribute("message", "You have already submitted a proposal for this request.");
+            response.sendRedirect(request.getContextPath() + "/technician/dashboard");
+            return;
+        }
+
+        PurchaseProposal proposal = new PurchaseProposal();
+        proposal.setRequestId(requestId);
+        proposal.setTechnicianId(technicianId);
+        proposal.setFeatures(features);
+        proposal.setPrice(price);
+        proposal.setDate(date);
+
+        proposalDAO.insert(proposal);
+        requestDAO.updateStatus(requestId, "proposed");
+
+        session.setAttribute("message", "Proposal submitted for request #" + requestId + ".");
+        response.sendRedirect(request.getContextPath() + "/technician/dashboard");
+    }
+
+    private void handleTakePost(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws IOException {
+        int requestId = Integer.parseInt(request.getParameter("requestId"));
+        int technicianId = (int) session.getAttribute("user_id");
+
+        boolean success = requestDAO.assignTechnician(requestId, technicianId);
+
+        if (success) {
+            session.setAttribute("message", "Request #" + requestId + " has been assigned to you.");
+        } else {
+            session.setAttribute("message", "Failed to assign request #" + requestId + ".");
+        }
+
+        response.sendRedirect(request.getContextPath() + "/technician/dashboard");
+    }
+}

@@ -248,36 +248,35 @@ public class PurchaseRequestDAO {
         return list;
     }
     public List<PurchaseRequest> findByTechnicianId(int technicianId) {
-        List<PurchaseRequest> list = new ArrayList<>();
-        String sql =
-            "SELECT pr.*, c.name AS category_name" +
-            "FROM PurchaseRequest pr" +
-            "JOIN Category c ON pr.category_id = c.id" +
-            "WHERE pr.technician_id = ?";
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, technicianId);
-            ResultSet rs = stmt.executeQuery();
-
+    List<PurchaseRequest> list = new ArrayList<>();
+    String sql = "SELECT pr.*, c.name AS categoryName, u.username AS purchaserName " +
+                 "FROM purchase_request pr " +
+                 "JOIN category c ON pr.category_id = c.id " +
+                 "JOIN users u ON pr.purchaser_id = u.id " +
+                 "WHERE pr.assigned_technician_id = ?";
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, technicianId);
+        try (ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                PurchaseRequest req = new PurchaseRequest();
-                req.setId(rs.getInt("id"));
-                req.setPurchaserId(rs.getInt("purchaser_id"));
-                req.setCategoryId(rs.getInt("category_id"));
-                req.setNotes(rs.getString("notes"));
-                req.setStatus(rs.getString("status"));
-                req.setCategoryName(rs.getString("category_name"));
-                list.add(req);
+                PurchaseRequest pr = new PurchaseRequest();
+                pr.setId(rs.getInt("id"));
+                pr.setCategoryId(rs.getInt("category_id"));
+                pr.setPurchaserId(rs.getInt("purchaser_id"));
+                pr.setNotes(rs.getString("notes"));
+                pr.setStatus(rs.getString("status"));
+                pr.setCategoryName(rs.getString("categoryName"));
+                pr.setPurchaserName(rs.getString("purchaserName"));
+                pr.setAssignedTechnicianId(rs.getInt("assigned_technician_id"));
+                list.add(pr);
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
-        return list;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return list;
+}
+
     
     public boolean assignTechnician(int requestId, int technicianId) {
         String sql = "UPDATE PurchaseRequest SET technician_id = ? WHERE id = ?";

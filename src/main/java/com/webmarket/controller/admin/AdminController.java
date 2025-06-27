@@ -105,7 +105,7 @@ public class AdminController extends HttpServlet {
 
                 case "selectWinner":
                     int proposalId = Integer.parseInt(request.getParameter("proposalId"));
-                    boolean winnerMarked = proposalDAO.markAsWinner(proposalId);
+                    boolean winnerMarked = proposalDAO.setWinner(proposalId, requestId);
                     if (winnerMarked) {
                         requestDAO.updateStatus(requestId, "winner_selected");
                         message = "Proposal #" + proposalId + " was marked as the winner.";

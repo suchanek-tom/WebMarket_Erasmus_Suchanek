@@ -40,8 +40,10 @@ public class PurchaserRequestDetailController extends HttpServlet {
             return;
         }
 
-        List<PurchaseProposal> proposals = proposalDAO.findByRequestIdWithTechnicianName(requestId);
+        List<PurchaseProposal> proposals = proposalDAO.findByRequestId(requestId);
 
+
+        
         Configuration cfg = FreemarkerConfig.getConfig();
         Template template = cfg.getTemplate("purchaser/purchaser_request_detail.ftl.html");
 

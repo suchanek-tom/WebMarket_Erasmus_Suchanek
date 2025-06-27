@@ -10,10 +10,10 @@ import java.util.List;
 public class PurchaseProposalDAO {
 
     public void insert(PurchaseProposal proposal) {
-        String sql = "INSERT INTO PurchaseProposal (request_id, technician_id, features, price, date) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PurchaseProposal (request_id, technician_id, features, price, date, is_winner) VALUES (?, ?, ?, ?, ?, false)";
 
         try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, proposal.getRequestId());
             stmt.setInt(2, proposal.getTechnicianId());
@@ -23,48 +23,51 @@ public class PurchaseProposalDAO {
 
             stmt.executeUpdate();
 
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    proposal.setId(rs.getInt(1));
+                }
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public List<PurchaseProposal> findByRequestId(int requestId) {
-        List<PurchaseProposal> list = new ArrayList<>();
-        String sql =
-            "SELECT pp.*, u.username AS technician_name " +
-            "FROM PurchaseProposal pp " +
-            "JOIN User u ON pp.technician_id = u.id " +
-            "WHERE pp.request_id = ?";
+    List<PurchaseProposal> list = new ArrayList<>();
+    String sql =
+        "SELECT pp.*, u.username AS technician_name " +
+        "FROM PurchaseProposal pp " +
+        "JOIN User u ON pp.technician_id = u.id " +
+        "WHERE pp.request_id = ?";
 
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, requestId);
-            ResultSet rs = stmt.executeQuery();
+        stmt.setInt(1, requestId);
+        ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                PurchaseProposal proposal = new PurchaseProposal();
-                proposal.setId(rs.getInt("id"));
-                proposal.setRequestId(rs.getInt("request_id"));
-                proposal.setTechnicianId(rs.getInt("technician_id"));
-                proposal.setTechnicianName(rs.getString("technician_name"));
-                proposal.setFeatures(rs.getString("features"));
-                proposal.setPrice(rs.getDouble("price"));
-                proposal.setDate(rs.getDate("date").toLocalDate());
-                proposal.setWinner(rs.getBoolean("is_winner"));
-                list.add(proposal);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (rs.next()) {
+            PurchaseProposal proposal = new PurchaseProposal();
+            proposal.setId(rs.getInt("id"));
+            proposal.setRequestId(rs.getInt("request_id"));
+            proposal.setTechnicianId(rs.getInt("technician_id"));
+            proposal.setTechnicianName(rs.getString("technician_name")); // <- důležité!
+            proposal.setFeatures(rs.getString("features"));
+            proposal.setPrice(rs.getDouble("price"));
+            proposal.setDate(rs.getDate("date").toLocalDate());
+            proposal.setWinner(rs.getBoolean("is_winner"));
+            list.add(proposal);
         }
 
-        return list;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
 
-    public List<PurchaseProposal> findByRequestIdWithTechnicianName(int requestId) {
-        return findByRequestId(requestId);
-    }
+    return list;
+}
+
 
     public boolean existsProposal(int requestId, int technicianId) {
         String sql = "SELECT COUNT(*) FROM PurchaseProposal WHERE request_id = ? AND technician_id = ?";
@@ -87,14 +90,33 @@ public class PurchaseProposalDAO {
         return false;
     }
 
-    public boolean markAsWinner(int proposalId) {
-        String sql = "UPDATE PurchaseProposal SET is_winner = 1 WHERE id = ?";
+    /**
+     * Nastaví jeden návrh jako vítězný a odznačí všechny ostatní návrhy u stejné žádosti.
+     */
+    public boolean setWinner(int proposalId, int requestId) {
+        String resetSql = "UPDATE PurchaseProposal SET is_winner = false WHERE request_id = ?";
+        String setWinnerSql = "UPDATE PurchaseProposal SET is_winner = true WHERE id = ?";
 
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection()) {
+            conn.setAutoCommit(false);
 
-            stmt.setInt(1, proposalId);
-            return stmt.executeUpdate() > 0;
+            try (PreparedStatement resetStmt = conn.prepareStatement(resetSql)) {
+                resetStmt.setInt(1, requestId);
+                resetStmt.executeUpdate();
+            }
+
+            try (PreparedStatement winnerStmt = conn.prepareStatement(setWinnerSql)) {
+                winnerStmt.setInt(1, proposalId);
+                int updated = winnerStmt.executeUpdate();
+
+                if (updated == 0) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            conn.commit();
+            return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -102,11 +124,9 @@ public class PurchaseProposalDAO {
         }
     }
 
+    // Můžeš implementovat logiku pro rejectProposal, pokud ji potřebuješ později
     public boolean rejectProposal(int proposalId) {
-        return true; 
-    }
-
-    public boolean setAsWinner(int proposalId) {
-        return markAsWinner(proposalId);
+        // zatím pouze placeholder, můžeš podle potřeby implementovat
+        return true;
     }
 }

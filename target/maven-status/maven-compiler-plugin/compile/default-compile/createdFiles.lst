@@ -9,6 +9,7 @@ com\webmarket\controller\purchaser\PurchaserRequestDetailController.class
 com\webmarket\controller\technician\TechnicianController.class
 com\webmarket\controller\admin\AdminController.class
 com\webmarket\controller\purchaser\PurchaserDashboardController.class
+com\webmarket\dao\FeatureDAO.class
 com\webmarket\controller\RootRedirectController.class
 com\webmarket\dao\ProposalDAO.class
 com\webmarket\controller\DashboardController.class

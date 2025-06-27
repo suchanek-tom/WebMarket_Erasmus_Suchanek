@@ -8,14 +8,8 @@ public class PurchaseRequest {
     private String status;
     private String categoryName;
     private String purchaserName;
+    private Integer assignedTechnicianId; 
 
-    public String getPurchaserName() { return purchaserName; }
-    public void setPurchaserName(String purchaserName) { this.purchaserName = purchaserName; }
-    
-    public String getCategoryName() { return categoryName; }
-    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
-
-    // Getters & Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -30,4 +24,13 @@ public class PurchaseRequest {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+
+    public String getPurchaserName() { return purchaserName; }
+    public void setPurchaserName(String purchaserName) { this.purchaserName = purchaserName; }
+
+    public Integer getAssignedTechnicianId() { return assignedTechnicianId; }
+    public void setAssignedTechnicianId(Integer assignedTechnicianId) { this.assignedTechnicianId = assignedTechnicianId; }
 }
