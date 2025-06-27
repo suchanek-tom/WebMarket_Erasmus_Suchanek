@@ -31,13 +31,13 @@
         </thead>
         <tbody>
             <#list proposals as proposal>
-                <tr <#if proposal.isWinner?? && proposal.isWinner>class="highlight"</#if>>
+                <tr <#if proposal.winner?? && proposal.winner>class="highlight"</#if>>
                     <td>${proposal.technicianName}</td>
                     <td>${proposal.features}</td>
                     <td>${proposal.price}</td>
                     <td>${proposal.date}</td>
                     <td>
-                        <#if !(proposal.isWinner?? && proposal.isWinner)>
+                        <#if proposal.winner?? && proposal.winner>
                             <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
                                 <input type="hidden" name="action" value="selectWinner">
                                 <input type="hidden" name="requestId" value="${requestId}">

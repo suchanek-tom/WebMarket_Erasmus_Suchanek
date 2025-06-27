@@ -46,13 +46,17 @@ public class TechnicianController extends HttpServlet {
     private void showDashboard(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
 
-        List<PurchaseRequest> pendingRequests = requestDAO.findAllPendingWithCategoryName();
+        int technicianId = (int) session.getAttribute("user_id");
+
+        List<PurchaseRequest> unassignedRequests = requestDAO.findUnassignedRequests();
+        List<PurchaseRequest> myRequests = requestDAO.findByTechnicianId(technicianId);
 
         Configuration cfg = FreemarkerConfig.getConfig();
         Template template = cfg.getTemplate("technician_dashboard.ftl.html");
 
         Map<String, Object> data = new HashMap<>();
-        data.put("requests", pendingRequests);
+        data.put("unassignedRequests", unassignedRequests);
+        data.put("myRequests", myRequests);
         data.put("username", session.getAttribute("username"));
 
         String message = (String) session.getAttribute("message");
@@ -71,7 +75,6 @@ public class TechnicianController extends HttpServlet {
 
     private void showProposalForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         int requestId = Integer.parseInt(request.getParameter("requestId"));
 
         Configuration cfg = FreemarkerConfig.getConfig();
@@ -108,7 +111,6 @@ public class TechnicianController extends HttpServlet {
 
             int technicianId = (int) session.getAttribute("user_id");
 
-            // ✅ Kontrola duplicitního návrhu
             if (proposalDAO.existsProposal(requestId, technicianId)) {
                 session.setAttribute("message", "You have already submitted a proposal for this request.");
                 response.sendRedirect(request.getContextPath() + "/technician/dashboard");
@@ -128,8 +130,23 @@ public class TechnicianController extends HttpServlet {
             session.setAttribute("message", "Proposal submitted for request #" + requestId + ".");
             response.sendRedirect(request.getContextPath() + "/technician/dashboard");
 
+        } else if ("/take".equals(path)) {
+            int requestId = Integer.parseInt(request.getParameter("requestId"));
+            int technicianId = (int) session.getAttribute("user_id");
+
+            boolean success = requestDAO.assignTechnician(requestId, technicianId);
+
+            if (success) {
+                session.setAttribute("message", "Request #" + requestId + " has been assigned to you.");
+            } else {
+                session.setAttribute("message", "Failed to assign request #" + requestId + ".");
+            }
+
+            response.sendRedirect(request.getContextPath() + "/technician/dashboard");
+
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 }
+

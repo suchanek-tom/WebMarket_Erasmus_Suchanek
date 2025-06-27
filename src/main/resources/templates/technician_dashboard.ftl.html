@@ -15,39 +15,58 @@
         <div class="alert-success">${message}</div>
     </#if>
 
-    <div class="card">
-        <p>Welcome, <strong>${username}</strong>!</p>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Category</th>
-                    <th>Notes</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <#list requests as req>
+    <h2>Unassigned Requests</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Notes</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <#list unassignedRequests as req>
                 <tr>
                     <td>${req.id}</td>
                     <td>${req.categoryName}</td>
                     <td>${req.notes}</td>
                     <td>
-                        <form method="get" action="/WebMarket/technician/propose" style="display:inline;">
+                        <form method="post" action="/WebMarket/technician/take">
                             <input type="hidden" name="requestId" value="${req.id}">
-                            <button type="submit">Propose</button>
-                        </form>
-                        <form method="get" action="/WebMarket/view-proposals" style="display:inline;">
-                            <input type="hidden" name="requestId" value="${req.id}">
-                            <button type="submit">View Proposals</button>
+                            <button type="submit">Take</button>
                         </form>
                     </td>
                 </tr>
-                </#list>
-            </tbody>
-        </table>
-    </div>
+            </#list>
+        </tbody>
+    </table>
+
+    <h2>My Assigned Requests</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Notes</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <#list myRequests as req>
+                <tr>
+                    <td>${req.id}</td>
+                    <td>${req.categoryName}</td>
+                    <td>${req.notes}</td>
+                    <td>${req.status}</td>
+                    <td>
+                        <a href="/WebMarket/technician/propose?requestId=${req.id}">Make Proposal</a>
+                    </td>
+                </tr>
+            </#list>
+        </tbody>
+    </table>
 </main>
 
 <#include "partials/outline_footer.ftl.html">

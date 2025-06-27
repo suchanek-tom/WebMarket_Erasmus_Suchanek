@@ -7,7 +7,7 @@ public class PurchaseProposal {
     private int id;
     private int requestId;
     private int technicianId;
-    private String technicianName; // volitelný – získáván přes JOIN
+    private String technicianName;
     private String features;
     private double price;
     private LocalDate date;

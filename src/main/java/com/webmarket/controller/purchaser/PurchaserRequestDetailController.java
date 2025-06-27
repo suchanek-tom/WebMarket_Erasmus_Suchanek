@@ -32,8 +32,15 @@ public class PurchaserRequestDetailController extends HttpServlet {
         }
 
         int requestId = Integer.parseInt(request.getParameter("requestId"));
-        PurchaseRequest purchaseRequest = requestDAO.findById(requestId);
-        List<PurchaseProposal> proposals = proposalDAO.findByRequestId(requestId);
+
+        // ✅ načti požadavek s názvem kategorie a jménem uživatele
+        PurchaseRequest purchaseRequest = requestDAO.findByIdWithCategoryAndUser(requestId);
+        if (purchaseRequest == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Request not found");
+            return;
+        }
+
+        List<PurchaseProposal> proposals = proposalDAO.findByRequestIdWithTechnicianName(requestId);
 
         Configuration cfg = FreemarkerConfig.getConfig();
         Template template = cfg.getTemplate("purchaser/purchaser_request_detail.ftl.html");
@@ -52,8 +59,7 @@ public class PurchaserRequestDetailController extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             template.process(data, out);
         } catch (Exception e) {
-            throw new ServletException("Template error", e);
+            throw new ServletException("Template rendering error", e);
         }
     }
 }
-    

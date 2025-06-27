@@ -30,10 +30,11 @@ public class PurchaseProposalDAO {
 
     public List<PurchaseProposal> findByRequestId(int requestId) {
         List<PurchaseProposal> list = new ArrayList<>();
-        String sql = "SELECT pp.*, u.username AS technician_name " +
-                     "FROM PurchaseProposal pp " +
-                     "JOIN User u ON pp.technician_id = u.id " +
-                     "WHERE pp.request_id = ?";
+        String sql =
+            "SELECT pp.*, u.username AS technician_name " +
+            "FROM PurchaseProposal pp " +
+            "JOIN User u ON pp.technician_id = u.id " +
+            "WHERE pp.request_id = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -61,6 +62,10 @@ public class PurchaseProposalDAO {
         return list;
     }
 
+    public List<PurchaseProposal> findByRequestIdWithTechnicianName(int requestId) {
+        return findByRequestId(requestId);
+    }
+
     public boolean existsProposal(int requestId, int technicianId) {
         String sql = "SELECT COUNT(*) FROM PurchaseProposal WHERE request_id = ? AND technician_id = ?";
 
@@ -84,20 +89,23 @@ public class PurchaseProposalDAO {
 
     public boolean markAsWinner(int proposalId) {
         String sql = "UPDATE PurchaseProposal SET is_winner = 1 WHERE id = ?";
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, proposalId);
             return stmt.executeUpdate() > 0;
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
-    
-    public boolean rejectProposal(int proposalId){
-        return true;
+
+    public boolean rejectProposal(int proposalId) {
+        return true; 
     }
-    
+
     public boolean setAsWinner(int proposalId) {
         return markAsWinner(proposalId);
     }

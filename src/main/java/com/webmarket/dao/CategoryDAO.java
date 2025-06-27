@@ -8,26 +8,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryDAO {
-  public List<Category> getAllCategories() {
-    List<Category> categories = new ArrayList<>();
-    String sql = "SELECT * FROM Category";
 
-    try (Connection conn = DBUtil.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql);
-         ResultSet rs = stmt.executeQuery()) {
+    public List<Category> findAll() {
+        List<Category> categories = new ArrayList<>();
+        String sql = "SELECT id, name FROM Category";
 
-        while (rs.next()) {
-            Category cat = new Category();
-            cat.setId(rs.getInt("id"));
-            cat.setName(rs.getString("name"));
-            categories.add(cat);
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Category c = new Category();
+                c.setId(rs.getInt("id"));
+                c.setName(rs.getString("name"));
+                categories.add(c);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return categories;
     }
-
-    return categories;
-}
-
 }

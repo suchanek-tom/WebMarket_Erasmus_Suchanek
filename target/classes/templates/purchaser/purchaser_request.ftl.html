@@ -9,24 +9,24 @@
 
 <#include "../partials/outline_header.ftl.html">
 
-<main class="card">
-    <h2>Create New Purchase Request</h2>
+<main>
+    <h2>Submit a New Purchase Request</h2>
 
-    <form method="post" action="/WebMarket/purchaser/request" class="form">
+    <form method="post" action="/WebMarket/purchaser/request">
         <label for="category">Category:</label>
-        <select name="category_id" id="category" required>
+        <select name="categoryId" id="category">
             <#list categories as cat>
                 <option value="${cat.id}">${cat.name}</option>
             </#list>
         </select>
 
-        <label for="notes">Notes:</label>
-        <textarea name="notes" id="notes" rows="4" cols="40" required></textarea>
+        <label for="notes">Notes (optional):</label>
+        <textarea name="notes" id="notes" rows="5" cols="40"></textarea>
 
-        <button type="submit" class="btn-primary">Submit Request</button>
+        <button type="submit">Submit Request</button>
     </form>
 
-    <a class="btn-secondary" href="/WebMarket/purchaser/dashboard">← Back to Dashboard</a>
+    <p><a href="/WebMarket/purchaser/dashboard">⬅ Back to Dashboard</a></p>
 </main>
 
 <#include "../partials/outline_footer.ftl.html">
