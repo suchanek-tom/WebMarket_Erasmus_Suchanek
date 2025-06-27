@@ -22,6 +22,7 @@ com\webmarket\model\PurchaseRequest.class
 com\webmarket\dao\PurchaseRequestDAO.class
 com\webmarket\controller\AuthController.class
 com\webmarket\controller\technician\TechnicianRejectController.class
+com\webmarket\controller\admin\AdminRegisterController.class
 com\webmarket\controller\NotFoundController.class
 com\webmarket\model\PurchaseProposal.class
 com\webmarket\controller\ViewProposalsController.class

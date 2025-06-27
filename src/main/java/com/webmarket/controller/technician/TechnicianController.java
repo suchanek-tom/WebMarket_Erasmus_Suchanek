@@ -73,7 +73,6 @@ public class TechnicianController extends HttpServlet {
 
     private void showProposalForm(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
-        // Ověření existence parametru a validace
         String reqIdStr = request.getParameter("requestId");
         if (reqIdStr == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing requestId parameter");
@@ -90,13 +89,8 @@ public class TechnicianController extends HttpServlet {
 
         int technicianId = (int) session.getAttribute("user_id");
 
-        // Kontrola, zda technik patří k danému requestu nebo zda je request nepřidělený (podle pravidel)
         PurchaseRequest pr = requestDAO.findById(requestId);
-        if (pr == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Purchase request not found");
-            return;
-        }
-        if (pr.getAssignedTechnicianId() != technicianId) {
+        if (pr == null || pr.getAssignedTechnicianId() != technicianId) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not assigned to this request");
             return;
         }
@@ -131,6 +125,8 @@ public class TechnicianController extends HttpServlet {
             handleProposalPost(request, response, session);
         } else if ("/take".equals(path)) {
             handleTakePost(request, response, session);
+        } else if ("/markOrdered".equals(path)) {
+            handleMarkOrdered(request, response, session);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -145,7 +141,6 @@ public class TechnicianController extends HttpServlet {
 
         int technicianId = (int) session.getAttribute("user_id");
 
-        // Kontrola, zda technik patří k danému requestu
         PurchaseRequest pr = requestDAO.findById(requestId);
         if (pr == null || pr.getAssignedTechnicianId() != technicianId) {
             session.setAttribute("message", "You are not assigned to this request.");
@@ -188,4 +183,28 @@ public class TechnicianController extends HttpServlet {
 
         response.sendRedirect(request.getContextPath() + "/technician/dashboard");
     }
+
+   private void handleMarkOrdered(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+        throws IOException {
+    int requestId = Integer.parseInt(request.getParameter("requestId"));
+    int technicianId = (int) session.getAttribute("user_id");
+
+    PurchaseRequest pr = requestDAO.findById(requestId);
+    if (pr == null || pr.getAssignedTechnicianId() != technicianId || !"winner_selected".equals(pr.getStatus())) {
+        session.setAttribute("message", "Invalid action. You must be the assigned technician and the request must be in 'winner_selected' status.");
+        response.sendRedirect(request.getContextPath() + "/technician/dashboard");
+        return;
+    }
+
+    boolean updated = requestDAO.updateStatus(requestId, "ordered");
+
+    if (updated) {
+        session.setAttribute("message", "Request #" + requestId + " marked as ordered.");
+    } else {
+        session.setAttribute("message", "Failed to update request status.");
+    }
+
+    response.sendRedirect(request.getContextPath() + "/technician/dashboard");
+}
+
 }

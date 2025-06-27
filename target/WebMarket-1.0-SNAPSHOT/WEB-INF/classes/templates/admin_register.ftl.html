@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register New User</title>
+    <link rel="stylesheet" href="/WebMarket/style/main.css">
+</head>
+<body>
+<#include "partials/outline_header.ftl.html">
+
+<main>
+    <h2>Register New User</h2>
+
+    <#if message??>
+        <div class="alert-success">${message}</div>
+    </#if>
+
+    <form method="post" action="/WebMarket/admin/register" class="form">
+        <label>Username:
+            <input type="text" name="username" required>
+        </label>
+
+        <label>Password:
+            <input type="password" name="password" required>
+        </label>
+
+        <label>Role:
+            <select name="role" required>
+                <option value="purchaser">Purchaser</option>
+                <option value="technician">Technician</option>
+            </select>
+        </label>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <a href="/WebMarket/admin/dashboard" class="btn-secondary">← Back to Dashboard</a>
+</main>
+
+<#include "partials/outline_footer.ftl.html">
+</body>
+</html>

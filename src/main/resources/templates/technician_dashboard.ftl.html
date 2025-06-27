@@ -59,9 +59,15 @@
                     <td>${req.id}</td>
                     <td>${req.categoryName}</td>
                     <td>${req.notes}</td>
-                    <td>${req.status}</td>
-                    <td>
+                    <td class="status ${req.status?lower_case}">${req.status}</td>
+                   <td>
                         <a href="/WebMarket/technician/propose?requestId=${req.id}">Make Proposal</a>
+                            <#if req.status == "winner_selected">
+                                <form method="post" action="/WebMarket/technician/markOrdered" style="display:inline">
+                                    <input type="hidden" name="requestId" value="${req.id}">
+                                    <button type="submit">Mark as Ordered</button>
+                                </form>
+                            </#if>
                     </td>
                 </tr>
             </#list>
