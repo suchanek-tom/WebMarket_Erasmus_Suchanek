@@ -33,31 +33,36 @@ public class PurchaseRequestDAO {
     }
 
     public List<PurchaseRequest> findByPurchaserId(int purchaserId) {
-        List<PurchaseRequest> list = new ArrayList<>();
-        String sql = "SELECT * FROM PurchaseRequest WHERE purchaser_id = ?";
+    List<PurchaseRequest> list = new ArrayList<>();
+    String sql = "SELECT pr.*, c.name AS category_name " +
+                 "FROM PurchaseRequest pr " +
+                 "JOIN Category c ON pr.category_id = c.id " +
+                 "WHERE pr.purchaser_id = ?";
 
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, purchaserId);
-            ResultSet rs = stmt.executeQuery();
+        stmt.setInt(1, purchaserId);
+        ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                PurchaseRequest req = new PurchaseRequest();
-                req.setId(rs.getInt("id"));
-                req.setPurchaserId(rs.getInt("purchaser_id"));
-                req.setCategoryId(rs.getInt("category_id"));
-                req.setNotes(rs.getString("notes"));
-                req.setStatus(rs.getString("status"));
-                list.add(req);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (rs.next()) {
+            PurchaseRequest req = new PurchaseRequest();
+            req.setId(rs.getInt("id"));
+            req.setPurchaserId(rs.getInt("purchaser_id"));
+            req.setCategoryId(rs.getInt("category_id"));
+            req.setNotes(rs.getString("notes"));
+            req.setStatus(rs.getString("status"));
+            req.setCategoryName(rs.getString("category_name")); // 👈 DŮLEŽITÉ!
+            list.add(req);
         }
 
-        return list;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+
+    return list;
+}
+
 
     public List<PurchaseRequest> findAllPendingWithCategoryName() {
         List<PurchaseRequest> list = new ArrayList<>();

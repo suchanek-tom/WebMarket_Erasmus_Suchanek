@@ -93,8 +93,11 @@ public class PurchaseProposalDAO {
             return false;
         }
     }
-
-    // ✅ Alias nebo veřejně přístupná alternativa:
+    
+    public boolean rejectProposal(int proposalId){
+        return true;
+    }
+    
     public boolean setAsWinner(int proposalId) {
         return markAsWinner(proposalId);
     }

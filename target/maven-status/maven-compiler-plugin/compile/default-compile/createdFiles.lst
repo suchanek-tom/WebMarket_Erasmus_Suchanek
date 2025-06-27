@@ -5,6 +5,7 @@ com\webmarket\dao\PurchaseProposalDAO.class
 com\webmarket\model\Notification.class
 com\webmarket\dao\CategoryDAO.class
 com\webmarket\model\Category.class
+com\webmarket\controller\purchaser\PurchaserRequestDetailController.class
 com\webmarket\controller\technician\TechnicianController.class
 com\webmarket\controller\admin\AdminController.class
 com\webmarket\controller\purchaser\PurchaserDashboardController.class
@@ -14,6 +15,7 @@ com\webmarket\controller\DashboardController.class
 com\webmarket\controller\LogoutController.class
 com\webmarket\utils\DBUtil.class
 com\webmarket\webmarket\resources\JakartaEE8Resource.class
+com\webmarket\controller\purchaser\PurchaserRequestActionController.class
 com\webmarket\dao\UserDAO.class
 com\webmarket\model\PurchaseRequest.class
 com\webmarket\dao\PurchaseRequestDAO.class

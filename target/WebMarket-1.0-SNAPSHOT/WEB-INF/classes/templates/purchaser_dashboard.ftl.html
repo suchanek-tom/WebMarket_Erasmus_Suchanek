@@ -8,40 +8,69 @@
 </head>
 <body>
 
-<#include "outline_header.ftl.html">
+<#include "partials/outline_header.ftl.html">
 
 <main>
+    <h2>Welcome, <strong>${username}</strong></h2>
+
     <#if message??>
         <div class="alert-success">${message}</div>
     </#if>
 
-    <div class="card">
-        <p>Welcome, <strong>${username}</strong>!</p>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Category ID</th>
-                    <th>Notes</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <#list requests as req>
-                <tr>
-                    <td>${req.id}</td>
-                    <td>${req.categoryId}</td>
-                    <td>${req.notes}</td>
-                    <td>${req.status}</td>
-                </tr>
-                </#list>
-            </tbody>
-        </table>
+    <div class="actions" style="margin-bottom: 1em;">
+        <a href="/WebMarket/purchaser/request" class="btn-primary">+ New Request</a>
     </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Notes</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <#list requests as req>
+            <tr>
+                <td>${req.id}</td>
+                <td>${req.categoryName}</td>
+                <td>${req.notes}</td>
+                <td>${req.status}</td>
+                <td>
+                    <a href="/WebMarket/purchaser/requests/detail?requestId=${req.id}">View</a>
+                </td>
+            </tr>
+            </#list>
+        </tbody>
+    </table>
 </main>
 
-<#include "outline_footer.ftl.html">
+<#include "partials/outline_footer.ftl.html">
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .actions {
+        margin-bottom: 15px;
+    }
+
+    .alert-success {
+        background-color: #ddffdd;
+        border-left: 5px solid #4CAF50;
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+</style>
 
 </body>
 </html>

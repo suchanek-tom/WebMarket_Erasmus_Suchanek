@@ -5,15 +5,41 @@
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="/WebMarket/style/main.css">
     <link rel="icon" href="/WebMarket/favicon.ico" type="image/x-icon">
+    <style>
+        .btn {
+            padding: 6px 12px;
+            margin: 0 2px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-approve { background-color: #4CAF50; color: white; }
+        .btn-reject { background-color: #f39c12; color: white; }
+        .btn-delete { background-color: #e74c3c; color: white; }
+        .badge {
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .status-pending { background: #f1c40f; color: #fff; }
+        .status-approved { background: #2ecc71; color: #fff; }
+        .status-rejected { background: #e67e22; color: #fff; }
+        .status-completed { background: #3498db; color: #fff; }
+        .status-winner_selected { background: #9b59b6; color: #fff; }
+    </style>
 </head>
 <body>
 
-    <#include "outline_header.ftl.html">
+<#include "partials/outline_header.ftl.html">
 
 <main>
 
     <div class="card">
         <h2>All Purchase Requests</h2>
+
+        <#if message??>
+            <div class="alert-success">${message}</div>
+        </#if>
 
         <table>
             <thead>
@@ -33,22 +59,29 @@
                         <td>${req.categoryName}</td>
                         <td>${req.purchaserName}</td>
                         <td>${req.notes}</td>
-                        <td>${req.status}</td>
                         <td>
+                            <#assign statusClass = "status-" + req.status>
+                            <span class="badge ${statusClass}">${req.status?cap_first}</span>
+                        </td>
+                        <td>
+                            <#assign disabled = (req.status != "pending")>
+                            
                             <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
                                 <input type="hidden" name="requestId" value="${req.id}">
                                 <input type="hidden" name="action" value="approve">
-                                <button type="submit">Approve</button>
+                                <button type="submit" class="btn btn-approve" <#if disabled>disabled</#if>>Approve</button>
                             </form>
+
                             <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
                                 <input type="hidden" name="requestId" value="${req.id}">
                                 <input type="hidden" name="action" value="reject">
-                                <button type="submit">Reject</button>
+                                <button type="submit" class="btn btn-reject" <#if disabled>disabled</#if>>Reject</button>
                             </form>
+
                             <form method="post" action="/WebMarket/admin/dashboard" style="display:inline;">
                                 <input type="hidden" name="requestId" value="${req.id}">
                                 <input type="hidden" name="action" value="delete">
-                                <button type="submit" class="danger">Delete</button>
+                                <button type="submit" class="btn btn-delete">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -56,8 +89,10 @@
             </tbody>
         </table>
     </div>
+
 </main>
 
-<#include "outline_footer.ftl.html">
+<#include "partials/outline_footer.ftl.html">
+
 </body>
 </html>

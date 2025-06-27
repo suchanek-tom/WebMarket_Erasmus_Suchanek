@@ -1,19 +1,35 @@
-<h2>Create New Purchase Request</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Purchase Request</title>
+    <link rel="stylesheet" href="/WebMarket/style/main.css">
+</head>
+<body>
 
-<form method="post" action="/WebMarket/purchaser/request">
-    <label>Category:
-        <select name="category_id">
+<#include "../partials/outline_header.ftl.html">
+
+<main class="card">
+    <h2>Create New Purchase Request</h2>
+
+    <form method="post" action="/WebMarket/purchaser/request" class="form">
+        <label for="category">Category:</label>
+        <select name="category_id" id="category" required>
             <#list categories as cat>
                 <option value="${cat.id}">${cat.name}</option>
             </#list>
         </select>
-    </label>
-    <br>
-    <label>Notes:<br>
-        <textarea name="notes" rows="4" cols="40"></textarea>
-    </label>
-    <br><br>
-    <button type="submit">Submit Request</button>
-</form>
 
-<p><a href="/WebMarket/purchaser/dashboard">Back to Dashboard</a></p>
+        <label for="notes">Notes:</label>
+        <textarea name="notes" id="notes" rows="4" cols="40" required></textarea>
+
+        <button type="submit" class="btn-primary">Submit Request</button>
+    </form>
+
+    <a class="btn-secondary" href="/WebMarket/purchaser/dashboard">← Back to Dashboard</a>
+</main>
+
+<#include "../partials/outline_footer.ftl.html">
+
+</body>
+</html>

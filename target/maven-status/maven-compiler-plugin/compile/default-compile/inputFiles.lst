@@ -5,8 +5,10 @@ C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmark
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\model\PurchaseProposal.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\model\Category.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\admin\AdminController.java
+C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\purchaser\PurchaserRequestDetailController.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\technician\TechnicianApproveController.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\LogoutController.java
+C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\purchaser\PurchaserRequestActionController.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\dao\ProposalDAO.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\webmarket\resources\JakartaEE8Resource.java
 C:\Users\Ottik-PC\Documents\NetBeansProjects\WebMarket\src\main\java\com\webmarket\controller\purchaser\PurchaserRequestController.java

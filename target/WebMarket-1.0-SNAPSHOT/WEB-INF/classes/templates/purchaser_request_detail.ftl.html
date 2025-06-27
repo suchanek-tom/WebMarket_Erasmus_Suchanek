@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Request Detail</title>
+    <link rel="stylesheet" href="/WebMarket/style/main.css">
+</head>
+<body>
+
+<#include "partials/outline_header.ftl.html">
+
+<main>
+    <h2>Request #${request.id} Detail</h2>
+
+    <p><strong>Category:</strong> ${request.categoryName}</p>
+    <p><strong>Notes:</strong> ${request.notes}</p>
+    <p><strong>Status:</strong> ${request.status}</p>
+
+    <#if message??>
+        <div class="alert-success">${message}</div>
+    </#if>
+
+    <h3>Proposals</h3>
+
+    <#if proposals?size == 0>
+        <p>No proposals yet.</p>
+    <#else>
+        <table>
+            <thead>
+                <tr>
+                    <th>Technician</th>
+                    <th>Features</th>
+                    <th>Price (EUR)</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <#list proposals as p>
+                    <tr <#if p.winner?? && p.winner>class="highlight"</#if>>
+                        <td>${p.technicianName}</td>
+                        <td>${p.features}</td>
+                        <td>${p.price}</td>
+                        <td>${p.date}</td>
+                        <td>
+                            <#if !(p.winner?? && p.winner)>
+                                <form method="post" action="/WebMarket/purchaser/requests/action" style="display:inline;">
+                                    <input type="hidden" name="action" value="accept" />
+                                    <input type="hidden" name="proposalId" value="${p.id}" />
+                                    <input type="hidden" name="requestId" value="${request.id}" />
+                                    <button type="submit">Accept</button>
+                                </form>
+                                <form method="post" action="/WebMarket/purchaser/requests/action" style="display:inline;">
+                                    <input type="hidden" name="action" value="reject" />
+                                    <input type="hidden" name="proposalId" value="${p.id}" />
+                                    <input type="hidden" name="requestId" value="${request.id}" />
+                                    <button type="submit">Reject</button>
+                                </form>
+                            <#else>
+                                <strong>✔ Accepted</strong>
+                            </#if>
+                        </td>
+                    </tr>
+                </#list>
+            </tbody>
+        </table>
+    </#if>
+
+    <p><a href="/WebMarket/purchaser/dashboard">⬅ Back to Dashboard</a></p>
+</main>
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .highlight {
+        background-color: #e6ffe6;
+    }
+
+    .alert-success {
+        background-color: #ddffdd;
+        border-left: 5px solid #4CAF50;
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+
+    button {
+        margin-right: 5px;
+    }
+</style>
+
+</body>
+</html>
