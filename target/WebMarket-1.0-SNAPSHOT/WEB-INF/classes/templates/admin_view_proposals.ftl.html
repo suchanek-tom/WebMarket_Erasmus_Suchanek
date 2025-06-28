@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Proposals for Request #${requestId}</title>
+    <link rel="stylesheet" href="/WebMarket/style/main.css">
+    <link rel="icon" href="/WebMarket/favicon.ico" type="image/x-icon">
+</head>
+<body>
+
+<#include "partials/outline_header.ftl.html">
+
+<main>
+    <h2>Proposals for Request #${requestId}</h2>
+
+    <#if proposals?size == 0>
+        <p>No proposals found for this request.</p>
+    <#else>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Technician ID</th>
+                    <th>Features</th>
+                    <th>Price</th>
+                    <th>Date</th>
+                    <th>Winner</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <#list proposals as prop>
+                    <tr>
+                        <td>${prop.id}</td>
+                        <td>${prop.technicianId}</td>
+                        <td>${prop.features}</td>
+                        <td>${prop.price?string["0.00"]} €</td>
+                        <td>${prop.date?string("yyyy-MM-dd")}</td>
+                        <td>
+                            <#if prop.winner?? && prop.winner>
+                                <strong>Yes</strong>
+                            <#else>
+                                No
+                            </#if>
+                        </td>
+                        <td>
+                            <#if requestStatus == "approved" || requestStatus == "winner_selected">
+                                <form method="post" action="/WebMarket/admin/dashboard" style="margin:0;">
+                                    <input type="hidden" name="action" value="selectWinner">
+                                    <input type="hidden" name="requestId" value="${requestId}">
+                                    <input type="hidden" name="proposalId" value="${prop.id}">
+                                    <button type="submit" 
+                                    <#if prop.winner?? && prop.winner> disabled</#if>
+                                    >Select Winner</button>
+                                </form>
+                            <#else>
+                                <em>Cannot select winner</em>
+                            </#if>
+                        </td>
+                    </tr>
+                </#list>
+            </tbody>
+        </table>
+    </#if>
+
+    <p><a href="/WebMarket/admin/dashboard">Back to Dashboard</a></p>
+</main>
+
+<#include "partials/outline_footer.ftl.html">
+
+</body>
+</html>
+    

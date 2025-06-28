@@ -11,16 +11,13 @@
 <#include "partials/outline_header.ftl.html">
 
 <main>
-    <h2>Welcome, <strong>${username}</strong></h2>
+    <h1>Welcome, ${username}!</h1>
 
     <#if message??>
         <div class="alert-success">${message}</div>
     </#if>
 
-    <div class="actions" style="margin-bottom: 1em;">
-        <a href="/WebMarket/purchaser/request" class="btn-primary">+ New Request</a>
-    </div>
-
+    <h2>Your Purchase Requests</h2>
     <table>
         <thead>
             <tr>
@@ -33,44 +30,32 @@
         </thead>
         <tbody>
             <#list requests as req>
-            <tr>
-                <td>${req.id}</td>
-                <td>${req.categoryName}</td>
-                <td>${req.notes}</td>
-                <td>${req.status}</td>
-                <td>
-                    <a href="/WebMarket/purchaser/requests/detail?requestId=${req.id}">View</a>
-                </td>
-            </tr>
+                <tr>
+                    <td>${req.id}</td>
+                    <td>${req.categoryName}</td>
+                    <td>${req.notes}</td>
+                    <td>${req.status}</td>
+                    <td>
+                        <#if req.status == "ordered">
+                            <form method="post" action="/WebMarket/purchaser/close" style="display:inline">
+                                <input type="hidden" name="requestId" value="${req.id}">
+                                <select name="result" required>
+                                    <option value="">-- select result --</option>
+                                    <option value="accepted">Accepted</option>
+                                    <option value="rejected_noncompliant">Rejected – Non-compliant</option>
+                                    <option value="rejected_notworking">Rejected – Not working</option>
+                                </select>
+                                <button type="submit">Close Request</button>
+                            </form>
+                        </#if>
+                    </td>
+                </tr>
             </#list>
         </tbody>
     </table>
 </main>
 
 <#include "partials/outline_footer.ftl.html">
-
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    th, td {
-        padding: 8px;
-        border: 1px solid #ccc;
-    }
-
-    .actions {
-        margin-bottom: 15px;
-    }
-
-    .alert-success {
-        background-color: #ddffdd;
-        border-left: 5px solid #4CAF50;
-        padding: 10px;
-        margin-bottom: 15px;
-    }
-</style>
 
 </body>
 </html>

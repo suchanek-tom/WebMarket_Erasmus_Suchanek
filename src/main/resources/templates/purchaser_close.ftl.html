@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Close Request</title>
+    <link rel="stylesheet" href="/WebMarket/style/main.css">
+    <link rel="icon" href="/WebMarket/favicon.ico" type="image/x-icon">
+</head>
+<body>
+
+<#include "partials/outline_header.ftl.html">
+
+<main>
+    <h2>Close Purchase Request #${requestId}</h2>
+
+    <form method="post" action="/WebMarket/purchaser/close">
+        <input type="hidden" name="requestId" value="${requestId}">
+
+        <label for="result">Choose closure reason:</label>
+        <select name="result" id="result" required>
+            <option value="accepted">Accepted</option>
+            <option value="rejected_non_compliant">Rejected – Non-compliant</option>
+            <option value="rejected_not_working">Rejected – Not working</option>
+        </select>
+
+        <br><br>
+        <button type="submit">Close Request</button>
+        <a href="/WebMarket/purchaser/dashboard" class="button-secondary">Cancel</a>
+    </form>
+</main>
+
+<#include "partials/outline_footer.ftl.html">
+
+</body>
+</html>

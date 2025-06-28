@@ -1,10 +1,6 @@
 package com.webmarket.controller.purchaser;
 
-import com.webmarket.dao.CategoryDAO;
-import com.webmarket.dao.FeatureDAO;
 import com.webmarket.dao.PurchaseRequestDAO;
-import com.webmarket.model.Category;
-import com.webmarket.model.Feature;
 import com.webmarket.model.PurchaseRequest;
 import com.webmarket.utils.FreemarkerConfig;
 import freemarker.template.Configuration;
@@ -17,11 +13,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
-@WebServlet("/purchaser/request")
+@WebServlet("/purchaser/close")
 public class PurchaserRequestController extends HttpServlet {
 
-    private final CategoryDAO categoryDAO = new CategoryDAO();
-    private final FeatureDAO featureDAO = new FeatureDAO();
     private final PurchaseRequestDAO requestDAO = new PurchaseRequestDAO();
 
     @Override
@@ -34,28 +28,47 @@ public class PurchaserRequestController extends HttpServlet {
             return;
         }
 
-        List<Category> categories = categoryDAO.findAll();
-        List<Feature> features = featureDAO.findAll();
+        String reqIdStr = request.getParameter("requestId");
+        if (reqIdStr == null) {
+            response.sendRedirect(request.getContextPath() + "/purchaser/dashboard");
+            return;
+        }
+
+        int requestId;
+        try {
+            requestId = Integer.parseInt(reqIdStr);
+        } catch (NumberFormatException e) {
+            session.setAttribute("message", "Invalid request ID.");
+            response.sendRedirect(request.getContextPath() + "/purchaser/dashboard");
+            return;
+        }
+
+        PurchaseRequest pr = requestDAO.findById(requestId);
+        int purchaserId = (int) session.getAttribute("user_id");
+
+        if (pr == null || pr.getPurchaserId() != purchaserId || !"ordered".equals(pr.getStatus())) {
+            session.setAttribute("message", "You can only close your own requests in 'ordered' status.");
+            response.sendRedirect(request.getContextPath() + "/purchaser/dashboard");
+            return;
+        }
 
         Configuration cfg = FreemarkerConfig.getConfig();
-        Template template = cfg.getTemplate("purchaser/purchaser_request.ftl.html");
+        Template template = cfg.getTemplate("purchaser_close.ftl.html");
 
         Map<String, Object> data = new HashMap<>();
-        data.put("categories", categories);
-        data.put("features", features);
-        data.put("username", session.getAttribute("username"));
+        data.put("requestId", requestId);
 
         response.setContentType("text/html");
         try (PrintWriter out = response.getWriter()) {
             template.process(data, out);
         } catch (Exception e) {
-            throw new ServletException("Template rendering failed", e);
+            throw new ServletException("Template error", e);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
 
         HttpSession session = request.getSession(false);
         if (session == null || !"purchaser".equals(session.getAttribute("role"))) {
@@ -63,19 +76,34 @@ public class PurchaserRequestController extends HttpServlet {
             return;
         }
 
+        int requestId = Integer.parseInt(request.getParameter("requestId"));
+        String result = request.getParameter("result"); // ✅ opraveno z "status" na "result"
+
+        List<String> allowedStatuses = Arrays.asList("accepted", "rejected_non_compliant", "rejected_not_working");
+
+        if (!allowedStatuses.contains(result)) {
+            session.setAttribute("message", "Invalid closure status.");
+            response.sendRedirect(request.getContextPath() + "/purchaser/dashboard");
+            return;
+        }
+
+        PurchaseRequest pr = requestDAO.findById(requestId);
         int purchaserId = (int) session.getAttribute("user_id");
-        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
-        String notes = request.getParameter("notes");
 
-        PurchaseRequest req = new PurchaseRequest();
-        req.setPurchaserId(purchaserId);
-        req.setCategoryId(categoryId);
-        req.setNotes(notes);
-        req.setStatus("pending");
+        if (pr == null || pr.getPurchaserId() != purchaserId || !"ordered".equals(pr.getStatus())) {
+            session.setAttribute("message", "You can only close your own ordered requests.");
+            response.sendRedirect(request.getContextPath() + "/purchaser/dashboard");
+            return;
+        }
 
-        requestDAO.insert(req);
+        boolean updated = requestDAO.updateStatus(requestId, "closed_" + result);
 
-        session.setAttribute("message", "Purchase request submitted successfully.");
+        if (updated) {
+            session.setAttribute("message", "Request #" + requestId + " closed as: " + result.replace('_', ' ') + ".");
+        } else {
+            session.setAttribute("message", "Failed to close request.");
+        }
+
         response.sendRedirect(request.getContextPath() + "/purchaser/dashboard");
     }
 }
