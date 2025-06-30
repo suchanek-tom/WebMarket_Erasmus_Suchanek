@@ -32,8 +32,7 @@ public class PurchaserRequestDetailController extends HttpServlet {
         }
 
         int requestId = Integer.parseInt(request.getParameter("requestId"));
-
-        // ✅ načti požadavek s názvem kategorie a jménem uživatele
+        
         PurchaseRequest purchaseRequest = requestDAO.findByIdWithCategoryAndUser(requestId);
         if (purchaseRequest == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Request not found");

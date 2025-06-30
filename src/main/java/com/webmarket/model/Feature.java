@@ -3,8 +3,7 @@ package com.webmarket.model;
 public class Feature {
     private int id;
     private String name;
-
-    // Constructors
+    
     public Feature() {}
 
     public Feature(int id, String name) {
@@ -12,7 +11,6 @@ public class Feature {
         this.name = name;
     }
 
-    // Getters & Setters
     public int getId() {
         return id;
     }

@@ -62,11 +62,9 @@ public class ViewProposalsController extends HttpServlet {
 
         int requestId = Integer.parseInt(request.getParameter("requestId"));
         int proposalId = Integer.parseInt(request.getParameter("proposalId"));
-
-        // Označí návrh jako vítězný
+        
         proposalDAO.setWinner(proposalId, requestId);
-
-        // Nastaví stav žádosti jako "accepted"
+        
         requestDAO.updateStatus(requestId, "accepted");
 
         session.setAttribute("message", "Proposal #" + proposalId + " was accepted successfully.");

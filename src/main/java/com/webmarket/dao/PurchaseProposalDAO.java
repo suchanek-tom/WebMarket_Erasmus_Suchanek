@@ -89,9 +89,6 @@ public class PurchaseProposalDAO {
         return false;
     }
 
-    /**
-     * Nastaví jeden návrh jako vítězný a odznačí všechny ostatní návrhy u stejné žádosti.
-     */
     public boolean setWinner(int proposalId, int requestId) {
         String resetSql = "UPDATE PurchaseProposal SET is_winner = false WHERE request_id = ?";
         String setWinnerSql = "UPDATE PurchaseProposal SET is_winner = true WHERE id = ? AND request_id = ?";
@@ -129,10 +126,8 @@ public class PurchaseProposalDAO {
             return false;
         }
     }
-
-    // Placeholder pro pozdější implementaci, pokud bude potřeba
+    
     public boolean rejectProposal(int proposalId) {
-        // Implementace dle potřeby
         return true;
     }
 }

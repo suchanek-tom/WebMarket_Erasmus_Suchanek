@@ -11,7 +11,6 @@ com\webmarket\controller\admin\AdminController.class
 com\webmarket\controller\purchaser\PurchaserDashboardController.class
 com\webmarket\dao\FeatureDAO.class
 com\webmarket\controller\RootRedirectController.class
-com\webmarket\dao\ProposalDAO.class
 com\webmarket\controller\DashboardController.class
 com\webmarket\controller\LogoutController.class
 com\webmarket\utils\DBUtil.class

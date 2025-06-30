@@ -20,8 +20,6 @@ public class DashboardController extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-
-        // Kontrola přihlášení
         if (session == null || session.getAttribute("username") == null) {
             response.sendRedirect("login?error=true");
             return;
@@ -29,8 +27,7 @@ public class DashboardController extends HttpServlet {
 
         String username = (String) session.getAttribute("username");
         String role = (String) session.getAttribute("role");
-
-        // Připravíme data pro šablonu
+        
         Configuration cfg = FreemarkerConfig.getConfig();
         Template template = cfg.getTemplate("dashboard.ftl.html");
 

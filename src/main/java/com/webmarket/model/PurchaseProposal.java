@@ -13,7 +13,6 @@ public class PurchaseProposal {
     private LocalDate date;
     private boolean isWinner;
 
-    // Gettery a settery
     public int getId() {
         return id;
     }

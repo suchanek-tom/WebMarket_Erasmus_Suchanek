@@ -71,7 +71,7 @@ public class AdminRegisterController extends HttpServlet {
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password); // v reálné aplikaci: HASH!
+        user.setPassword(password);
         user.setRole(role);
 
         boolean inserted = userDAO.insertUser(user);
