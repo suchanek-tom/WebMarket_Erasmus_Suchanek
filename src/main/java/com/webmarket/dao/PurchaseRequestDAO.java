@@ -10,35 +10,33 @@ import java.util.List;
 public class PurchaseRequestDAO {
 
     public void insert(PurchaseRequest request) {
-    String sql = "INSERT INTO PurchaseRequest (purchaser_id, category_id, notes, status) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO PurchaseRequest (purchaser_id, category_id, notes, status) VALUES (?, ?, ?, ?)";
 
-    try (Connection conn = DBUtil.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-        stmt.setInt(1, request.getPurchaserId());
-        stmt.setInt(2, request.getCategoryId());
-        stmt.setString(3, request.getNotes());
-        stmt.setString(4, request.getStatus());
+            stmt.setInt(1, request.getPurchaserId());
+            stmt.setInt(2, request.getCategoryId());
+            stmt.setString(3, request.getNotes());
+            stmt.setString(4, request.getStatus());
+            stmt.executeUpdate();
 
-        stmt.executeUpdate();
-
-        ResultSet rs = stmt.getGeneratedKeys();
-        if (rs.next()) {
-            request.setId(rs.getInt(1));
-        }
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                request.setId(rs.getInt(1));
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }   
+    }
 
     public List<PurchaseRequest> findByPurchaserId(int purchaserId) {
         List<PurchaseRequest> list = new ArrayList<>();
-        String sql =
-            "SELECT pr.*, c.name AS category_name " +
-            "FROM PurchaseRequest pr " +
-            "JOIN Category c ON pr.category_id = c.id " +
-            "WHERE pr.purchaser_id = ?";
+        String sql = "SELECT pr.*, c.name AS category_name" +
+                "FROM PurchaseRequest pr" +
+                "JOIN Category c ON pr.category_id = c.id" +
+                "WHERE pr.purchaser_id = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -47,12 +45,7 @@ public class PurchaseRequestDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                PurchaseRequest req = new PurchaseRequest();
-                req.setId(rs.getInt("id"));
-                req.setPurchaserId(rs.getInt("purchaser_id"));
-                req.setCategoryId(rs.getInt("category_id"));
-                req.setNotes(rs.getString("notes"));
-                req.setStatus(rs.getString("status"));
+                PurchaseRequest req = extractBasicRequest(rs);
                 req.setCategoryName(rs.getString("category_name"));
                 list.add(req);
             }
@@ -66,24 +59,17 @@ public class PurchaseRequestDAO {
 
     public List<PurchaseRequest> findAllPendingWithCategoryName() {
         List<PurchaseRequest> list = new ArrayList<>();
-        String sql =
-            "SELECT pr.*, c.name AS category_name " +
-            "FROM PurchaseRequest pr " +
-            "JOIN Category c ON pr.category_id = c.id " +
-            "WHERE pr.status = 'pending'";
+        String sql = "SELECT pr.*, c.name AS category_name" +
+                "FROM PurchaseRequest pr" +
+                "JOIN Category c ON pr.category_id = c.id" +
+                "WHERE pr.status = 'pending'";
 
         try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            ResultSet rs = stmt.executeQuery();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                PurchaseRequest req = new PurchaseRequest();
-                req.setId(rs.getInt("id"));
-                req.setPurchaserId(rs.getInt("purchaser_id"));
-                req.setCategoryId(rs.getInt("category_id"));
-                req.setNotes(rs.getString("notes"));
-                req.setStatus(rs.getString("status"));
+                PurchaseRequest req = extractBasicRequest(rs);
                 req.setCategoryName(rs.getString("category_name"));
                 list.add(req);
             }
@@ -97,24 +83,17 @@ public class PurchaseRequestDAO {
 
     public List<PurchaseRequest> findAllWithCategoryAndUser() {
         List<PurchaseRequest> list = new ArrayList<>();
-        String sql =
-            "SELECT pr.*, c.name AS category_name, u.username AS purchaser_name " +
-            "FROM PurchaseRequest pr " +
-            "JOIN Category c ON pr.category_id = c.id " +
-            "JOIN User u ON pr.purchaser_id = u.id";
+        String sql = "SELECT pr.*, c.name AS category_name, u.username AS purchaser_name" +
+                "FROM PurchaseRequest pr" +
+                "JOIN Category c ON pr.category_id = c.id" +
+                "JOIN User u ON pr.purchaser_id = u.id";
 
         try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            ResultSet rs = stmt.executeQuery();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                PurchaseRequest req = new PurchaseRequest();
-                req.setId(rs.getInt("id"));
-                req.setPurchaserId(rs.getInt("purchaser_id"));
-                req.setCategoryId(rs.getInt("category_id"));
-                req.setNotes(rs.getString("notes"));
-                req.setStatus(rs.getString("status"));
+                PurchaseRequest req = extractBasicRequest(rs);
                 req.setCategoryName(rs.getString("category_name"));
                 req.setPurchaserName(rs.getString("purchaser_name"));
                 list.add(req);
@@ -137,13 +116,7 @@ public class PurchaseRequestDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                PurchaseRequest req = new PurchaseRequest();
-                req.setId(rs.getInt("id"));
-                req.setPurchaserId(rs.getInt("purchaser_id"));
-                req.setCategoryId(rs.getInt("category_id"));
-                req.setNotes(rs.getString("notes"));
-                req.setStatus(rs.getString("status"));
-                return req;
+                return extractBasicRequest(rs);
             }
 
         } catch (SQLException e) {
@@ -154,12 +127,11 @@ public class PurchaseRequestDAO {
     }
 
     public PurchaseRequest findByIdWithCategoryAndUser(int id) {
-        String sql =
-            "SELECT pr.*, c.name AS category_name, u.username AS purchaser_name " +
-            "FROM PurchaseRequest pr " +
-            "JOIN Category c ON pr.category_id = c.id " +
-            "JOIN User u ON pr.purchaser_id = u.id " +
-            "WHERE pr.id = ?";
+        String sql = "SELECT pr.*, c.name AS category_name, u.username AS purchaser_name" +
+                "FROM PurchaseRequest pr" +
+                "JOIN Category c ON pr.category_id = c.id" +
+                "JOIN User u ON pr.purchaser_id = u.id" +
+                "WHERE pr.id = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -168,12 +140,7 @@ public class PurchaseRequestDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                PurchaseRequest req = new PurchaseRequest();
-                req.setId(rs.getInt("id"));
-                req.setPurchaserId(rs.getInt("purchaser_id"));
-                req.setCategoryId(rs.getInt("category_id"));
-                req.setNotes(rs.getString("notes"));
-                req.setStatus(rs.getString("status"));
+                PurchaseRequest req = extractBasicRequest(rs);
                 req.setCategoryName(rs.getString("category_name"));
                 req.setPurchaserName(rs.getString("purchaser_name"));
                 return req;
@@ -216,27 +183,20 @@ public class PurchaseRequestDAO {
             return false;
         }
     }
-    
+
     public List<PurchaseRequest> findUnassignedRequests() {
         List<PurchaseRequest> list = new ArrayList<>();
-        String sql = 
-            "SELECT pr.*, c.name AS category_name" +
-            "FROM PurchaseRequest pr" +
-            "JOIN Category c ON pr.category_id = c.id" +
-            "WHERE pr.technician_id IS NULL";
+        String sql = "SELECT pr.*, c.name AS category_name" +
+                "FROM PurchaseRequest pr" +
+                "JOIN Category c ON pr.category_id = c.id" +
+                "WHERE pr.technician_id IS NULL";
 
         try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            ResultSet rs = stmt.executeQuery();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                PurchaseRequest req = new PurchaseRequest();
-                req.setId(rs.getInt("id"));
-                req.setPurchaserId(rs.getInt("purchaser_id"));
-                req.setCategoryId(rs.getInt("category_id"));
-                req.setNotes(rs.getString("notes"));
-                req.setStatus(rs.getString("status"));
+                PurchaseRequest req = extractBasicRequest(rs);
                 req.setCategoryName(rs.getString("category_name"));
                 list.add(req);
             }
@@ -247,37 +207,36 @@ public class PurchaseRequestDAO {
 
         return list;
     }
-    public List<PurchaseRequest> findByTechnicianId(int technicianId) {
-    List<PurchaseRequest> list = new ArrayList<>();
-    String sql = "SELECT pr.*, c.name AS categoryName, u.username AS purchaserName " +
-                 "FROM purchase_request pr " +
-                 "JOIN category c ON pr.category_id = c.id " +
-                 "JOIN users u ON pr.purchaser_id = u.id " +
-                 "WHERE pr.assigned_technician_id = ?";
-    try (Connection conn = DBUtil.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, technicianId);
-        try (ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                PurchaseRequest pr = new PurchaseRequest();
-                pr.setId(rs.getInt("id"));
-                pr.setCategoryId(rs.getInt("category_id"));
-                pr.setPurchaserId(rs.getInt("purchaser_id"));
-                pr.setNotes(rs.getString("notes"));
-                pr.setStatus(rs.getString("status"));
-                pr.setCategoryName(rs.getString("categoryName"));
-                pr.setPurchaserName(rs.getString("purchaserName"));
-                pr.setAssignedTechnicianId(rs.getInt("assigned_technician_id"));
-                list.add(pr);
-            }
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return list;
-}
 
-    
+    public List<PurchaseRequest> findByTechnicianId(int technicianId) {
+        List<PurchaseRequest> list = new ArrayList<>();
+        String sql = "SELECT pr.*, c.name AS category_name, u.username AS purchaser_name" +
+                "FROM PurchaseRequest pr" +
+                "JOIN Category c ON pr.category_id = c.id" +
+                "JOIN User u ON pr.purchaser_id = u.id" +
+                "WHERE pr.technician_id = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, technicianId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                PurchaseRequest req = extractBasicRequest(rs);
+                req.setCategoryName(rs.getString("category_name"));
+                req.setPurchaserName(rs.getString("purchaser_name"));
+                req.setAssignedTechnicianId(rs.getInt("technician_id"));
+                list.add(req);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
     public boolean assignTechnician(int requestId, int technicianId) {
         String sql = "UPDATE PurchaseRequest SET technician_id = ? WHERE id = ?";
 
@@ -293,5 +252,14 @@ public class PurchaseRequestDAO {
             return false;
         }
     }
-    
+
+    private PurchaseRequest extractBasicRequest(ResultSet rs) throws SQLException {
+        PurchaseRequest req = new PurchaseRequest();
+        req.setId(rs.getInt("id"));
+        req.setPurchaserId(rs.getInt("purchaser_id"));
+        req.setCategoryId(rs.getInt("category_id"));
+        req.setNotes(rs.getString("notes"));
+        req.setStatus(rs.getString("status"));
+        return req;
+    }
 }
