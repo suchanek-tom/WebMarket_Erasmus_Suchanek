@@ -9,6 +9,7 @@ import java.util.List;
 
 public class PurchaseProposalDAO {
 
+    // Vložení nového návrhu
     public void insert(PurchaseProposal proposal) {
         String sql = "INSERT INTO PurchaseProposal (request_id, technician_id, features, price, date, is_winner) VALUES (?, ?, ?, ?, ?, false)";
 
@@ -34,6 +35,7 @@ public class PurchaseProposalDAO {
         }
     }
 
+    // Načtení návrhů pro konkrétní request (včetně jména technika)
     public List<PurchaseProposal> findByRequestId(int requestId) {
         List<PurchaseProposal> list = new ArrayList<>();
         String sql =
@@ -53,7 +55,7 @@ public class PurchaseProposalDAO {
                 proposal.setId(rs.getInt("id"));
                 proposal.setRequestId(rs.getInt("request_id"));
                 proposal.setTechnicianId(rs.getInt("technician_id"));
-                proposal.setTechnicianName(rs.getString("technician_name")); // <- důležité!
+                proposal.setTechnicianName(rs.getString("technician_name")); // zobrazitelné jméno
                 proposal.setFeatures(rs.getString("features"));
                 proposal.setPrice(rs.getDouble("price"));
                 proposal.setDate(rs.getDate("date").toLocalDate());
@@ -68,6 +70,7 @@ public class PurchaseProposalDAO {
         return list;
     }
 
+    // Zkontroluje, zda již daný technik navrhl řešení k dané žádosti
     public boolean existsProposal(int requestId, int technicianId) {
         String sql = "SELECT COUNT(*) FROM PurchaseProposal WHERE request_id = ? AND technician_id = ?";
 
@@ -89,6 +92,7 @@ public class PurchaseProposalDAO {
         return false;
     }
 
+    // Nastaví vítěze návrhu (ostatní nastaví na false) – transakce
     public boolean setWinner(int proposalId, int requestId) {
         String resetSql = "UPDATE PurchaseProposal SET is_winner = false WHERE request_id = ?";
         String setWinnerSql = "UPDATE PurchaseProposal SET is_winner = true WHERE id = ? AND request_id = ?";
@@ -126,8 +130,20 @@ public class PurchaseProposalDAO {
             return false;
         }
     }
-    
+
+    // Odmítnutí návrhu – smažeme návrh
     public boolean rejectProposal(int proposalId) {
-        return true;
+        String sql = "DELETE FROM PurchaseProposal WHERE id = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, proposalId);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -33,9 +33,9 @@ public class PurchaseRequestDAO {
 
     public List<PurchaseRequest> findByPurchaserId(int purchaserId) {
         List<PurchaseRequest> list = new ArrayList<>();
-        String sql = "SELECT pr.*, c.name AS category_name" +
-                "FROM PurchaseRequest pr" +
-                "JOIN Category c ON pr.category_id = c.id" +
+        String sql = "SELECT pr.*, c.name AS category_name " +
+                "FROM PurchaseRequest pr " +
+                "JOIN Category c ON pr.category_id = c.id " +
                 "WHERE pr.purchaser_id = ?";
 
         try (Connection conn = DBUtil.getConnection();
@@ -59,9 +59,9 @@ public class PurchaseRequestDAO {
 
     public List<PurchaseRequest> findAllPendingWithCategoryName() {
         List<PurchaseRequest> list = new ArrayList<>();
-        String sql = "SELECT pr.*, c.name AS category_name" +
-                "FROM PurchaseRequest pr" +
-                "JOIN Category c ON pr.category_id = c.id" +
+        String sql = "SELECT pr.*, c.name AS category_name " +
+                "FROM PurchaseRequest pr " +
+                "JOIN Category c ON pr.category_id = c.id " +
                 "WHERE pr.status = 'pending'";
 
         try (Connection conn = DBUtil.getConnection();
@@ -83,9 +83,9 @@ public class PurchaseRequestDAO {
 
     public List<PurchaseRequest> findAllWithCategoryAndUser() {
         List<PurchaseRequest> list = new ArrayList<>();
-        String sql = "SELECT pr.*, c.name AS category_name, u.username AS purchaser_name" +
-                "FROM PurchaseRequest pr" +
-                "JOIN Category c ON pr.category_id = c.id" +
+        String sql = "SELECT pr.*, c.name AS category_name, u.username AS purchaser_name " +
+                "FROM PurchaseRequest pr " +
+                "JOIN Category c ON pr.category_id = c.id " +
                 "JOIN User u ON pr.purchaser_id = u.id";
 
         try (Connection conn = DBUtil.getConnection();
@@ -127,10 +127,10 @@ public class PurchaseRequestDAO {
     }
 
     public PurchaseRequest findByIdWithCategoryAndUser(int id) {
-        String sql = "SELECT pr.*, c.name AS category_name, u.username AS purchaser_name" +
-                "FROM PurchaseRequest pr" +
-                "JOIN Category c ON pr.category_id = c.id" +
-                "JOIN User u ON pr.purchaser_id = u.id" +
+        String sql = "SELECT pr.*, c.name AS category_name, u.username AS purchaser_name " +
+                "FROM PurchaseRequest pr " +
+                "JOIN Category c ON pr.category_id = c.id " +
+                "JOIN User u ON pr.purchaser_id = u.id " +
                 "WHERE pr.id = ?";
 
         try (Connection conn = DBUtil.getConnection();
@@ -186,10 +186,10 @@ public class PurchaseRequestDAO {
 
     public List<PurchaseRequest> findUnassignedRequests() {
         List<PurchaseRequest> list = new ArrayList<>();
-        String sql = "SELECT pr.*, c.name AS category_name" +
-                "FROM PurchaseRequest pr" +
-                "JOIN Category c ON pr.category_id = c.id" +
-                "WHERE pr.technician_id IS NULL";
+        String sql = "SELECT pr.*, c.name AS category_name " +
+                "FROM PurchaseRequest pr " +
+                "JOIN Category c ON pr.category_id = c.id " +
+                "WHERE pr.technician_id IS NULL ";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -210,11 +210,11 @@ public class PurchaseRequestDAO {
 
     public List<PurchaseRequest> findByTechnicianId(int technicianId) {
         List<PurchaseRequest> list = new ArrayList<>();
-        String sql = "SELECT pr.*, c.name AS category_name, u.username AS purchaser_name" +
-                "FROM PurchaseRequest pr" +
-                "JOIN Category c ON pr.category_id = c.id" +
-                "JOIN User u ON pr.purchaser_id = u.id" +
-                "WHERE pr.technician_id = ?";
+        String sql = "SELECT pr.*, c.name AS category_name, u.username AS purchaser_name " +
+                "FROM PurchaseRequest pr " +
+                "JOIN Category c ON pr.category_id = c.id " +
+                "JOIN User u ON pr.purchaser_id = u.id " +
+                "WHERE pr.technician_id = ? ";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -238,7 +238,7 @@ public class PurchaseRequestDAO {
     }
 
     public boolean assignTechnician(int requestId, int technicianId) {
-        String sql = "UPDATE PurchaseRequest SET technician_id = ? WHERE id = ?";
+        String sql = "UPDATE PurchaseRequest SET technician_id = ? WHERE id = ? ";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

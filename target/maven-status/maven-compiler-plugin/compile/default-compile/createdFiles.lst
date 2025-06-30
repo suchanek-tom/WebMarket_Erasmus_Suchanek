@@ -6,12 +6,12 @@ com\webmarket\utils\DBUtil.class
 com\webmarket\controller\purchaser\PurchaserRequestActionController.class
 com\webmarket\dao\UserDAO.class
 com\webmarket\dao\PurchaseRequestDAO.class
+com\webmarket\controller\purchaser\PurchaserCloseController.class
 com\webmarket\controller\AuthController.class
 com\webmarket\model\PurchaseProposal.class
 com\webmarket\controller\ViewProposalsController.class
 com\webmarket\controller\ProfileController.class
 com\webmarket\model\User.class
-com\webmarket\controller\purchaser\PurchaserRequestController.class
 com\webmarket\controller\technician\TechnicianApproveController.class
 com\webmarket\utils\FreemarkerConfig.class
 com\webmarket\model\Notification.class
@@ -24,6 +24,7 @@ com\webmarket\controller\DashboardController.class
 com\webmarket\controller\LogoutController.class
 com\webmarket\webmarket\resources\JakartaEE8Resource.class
 com\webmarket\model\PurchaseRequest.class
+com\webmarket\controller\admin\AdminProposalsController.class
 com\webmarket\controller\technician\TechnicianRejectController.class
 com\webmarket\controller\admin\AdminRegisterController.class
 com\webmarket\controller\NotFoundController.class

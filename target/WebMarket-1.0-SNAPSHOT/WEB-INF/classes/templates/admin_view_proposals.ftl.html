@@ -20,7 +20,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Technician ID</th>
+                    <th>Technician</th>
                     <th>Features</th>
                     <th>Price</th>
                     <th>Date</th>
@@ -32,10 +32,13 @@
                 <#list proposals as prop>
                     <tr>
                         <td>${prop.id}</td>
-                        <td>${prop.technicianId}</td>
+                        <td>${prop.technicianName}</td>
                         <td>${prop.features}</td>
+                        
                         <td>${prop.price?string["0.00"]} €</td>
-                        <td>${prop.date?string("yyyy-MM-dd")}</td>
+
+                        <td>${prop.date}</td>
+
                         <td>
                             <#if prop.winner?? && prop.winner>
                                 <strong>Yes</strong>
@@ -43,15 +46,17 @@
                                 No
                             </#if>
                         </td>
+
                         <td>
                             <#if requestStatus == "approved" || requestStatus == "winner_selected">
                                 <form method="post" action="/WebMarket/admin/dashboard" style="margin:0;">
                                     <input type="hidden" name="action" value="selectWinner">
                                     <input type="hidden" name="requestId" value="${requestId}">
                                     <input type="hidden" name="proposalId" value="${prop.id}">
-                                    <button type="submit" 
-                                    <#if prop.winner?? && prop.winner> disabled</#if>
-                                    >Select Winner</button>
+                                    <button type="submit"
+                                        <#if prop.winner?? && prop.winner> disabled</#if>>
+                                        Select Winner
+                                    </button>
                                 </form>
                             <#else>
                                 <em>Cannot select winner</em>
