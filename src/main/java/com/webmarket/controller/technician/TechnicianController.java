@@ -94,8 +94,9 @@ public class TechnicianController extends HttpServlet {
         int technicianId = (int) session.getAttribute("user_id");
 
         PurchaseRequest pr = requestDAO.findById(requestId);
-        if (pr == null || pr.getAssignedTechnicianId() != technicianId) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not assigned to this request");
+        if (pr == null || pr.getAssignedTechnicianId() == null || !pr.getAssignedTechnicianId().equals(technicianId)) {
+            session.setAttribute("message", "You are not assigned to this request.");
+            response.sendRedirect(request.getContextPath() + "/technician/dashboard");
             return;
         }
 
@@ -150,7 +151,7 @@ public class TechnicianController extends HttpServlet {
         int technicianId = (int) session.getAttribute("user_id");
 
         PurchaseRequest pr = requestDAO.findById(requestId);
-        if (pr == null || pr.getAssignedTechnicianId() != technicianId) {
+        if (pr == null || pr.getAssignedTechnicianId() == null || !pr.getAssignedTechnicianId().equals(technicianId)) {
             session.setAttribute("message", "You are not assigned to this request.");
             response.sendRedirect(request.getContextPath() + "/technician/dashboard");
             return;
@@ -199,7 +200,7 @@ public class TechnicianController extends HttpServlet {
         int technicianId = (int) session.getAttribute("user_id");
 
         PurchaseRequest pr = requestDAO.findById(requestId);
-        if (pr == null || pr.getAssignedTechnicianId() != technicianId || !"winner_selected".equals(pr.getStatus())) {
+        if (pr == null || pr.getAssignedTechnicianId() == null || !pr.getAssignedTechnicianId().equals(technicianId) || !"winner_selected".equals(pr.getStatus())) {
             session.setAttribute("message", "Invalid action. You must be the assigned technician and the request must be in 'winner_selected' status.");
             response.sendRedirect(request.getContextPath() + "/technician/dashboard");
             return;

@@ -34,18 +34,24 @@
                     <td>${req.id}</td>
                     <td>${req.categoryName}</td>
                     <td>${req.notes}</td>
-                    <td>${req.status}</td>
+                    <td class="status ${req.status?lower_case}">${req.status}</td>
                     <td>
-                        <#if req.status == "ordered">
-                            <form method="post" action="/WebMarket/purchaser/close" style="display:inline">
+                        <form method="get" action="/WebMarket/purchaser/requests/detail" style="display:inline">
+                            <input type="hidden" name="requestId" value="${req.id}">
+                            <button type="submit">View Proposals</button>
+                        </form>
+
+                        <#if req.status == "pending">
+                            <form method="post" action="/WebMarket/purchaser/cancel" style="display:inline">
                                 <input type="hidden" name="requestId" value="${req.id}">
-                                <select name="result" required>
-                                    <option value="">-- select result --</option>
-                                    <option value="accepted">Accepted</option>
-                                    <option value="rejected_noncompliant">Rejected – Non-compliant</option>
-                                    <option value="rejected_notworking">Rejected – Not working</option>
-                                </select>
-                                <button type="submit">Close Request</button>
+                                <button type="submit">Cancel</button>
+                            </form>
+                        </#if>
+
+                        <#if req.status == "ordered">
+                            <form method="get" action="/WebMarket/purchaser/close" style="display:inline">
+                                <input type="hidden" name="requestId" value="${req.id}">
+                                <button type="submit">Close</button>
                             </form>
                         </#if>
                     </td>
@@ -53,6 +59,8 @@
             </#list>
         </tbody>
     </table>
+
+    <p><a href="/WebMarket/purchaser/request" class="btn-primary">Create New Request</a></p>
 </main>
 
 <#include "partials/outline_footer.ftl.html">

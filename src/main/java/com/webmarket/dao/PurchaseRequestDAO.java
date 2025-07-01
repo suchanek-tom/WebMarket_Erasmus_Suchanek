@@ -9,27 +9,37 @@ import java.util.List;
 
 public class PurchaseRequestDAO {
 
-    public void insert(PurchaseRequest request) {
-        String sql = "INSERT INTO PurchaseRequest (purchaser_id, category_id, notes, status) VALUES (?, ?, ?, ?)";
+  public boolean insert(PurchaseRequest pr) {
+    String sql = "INSERT INTO PurchaseRequest (purchaser_id, category_id, notes, status) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setInt(1, request.getPurchaserId());
-            stmt.setInt(2, request.getCategoryId());
-            stmt.setString(3, request.getNotes());
-            stmt.setString(4, request.getStatus());
-            stmt.executeUpdate();
+        stmt.setInt(1, pr.getPurchaserId());
+        stmt.setInt(2, pr.getCategoryId());
+        stmt.setString(3, pr.getNotes());
+        stmt.setString(4, pr.getStatus());
 
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                request.setId(rs.getInt(1));
-            }
+        int affectedRows = stmt.executeUpdate();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (affectedRows == 0) {
+            return false;
         }
+
+        try (ResultSet rs = stmt.getGeneratedKeys()) {
+            if (rs.next()) {
+                pr.setId(rs.getInt(1));
+            }
+        }
+
+        return true;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
     }
+}
+
 
     public List<PurchaseRequest> findByPurchaserId(int purchaserId) {
         List<PurchaseRequest> list = new ArrayList<>();
@@ -195,11 +205,13 @@ public class PurchaseRequestDAO {
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                PurchaseRequest req = extractBasicRequest(rs);
-                req.setCategoryName(rs.getString("category_name"));
-                list.add(req);
+           while(rs.next()){
+            PurchaseRequest r = extractBasicRequest(rs);
+            r.setAssignedTechnicianId(rs.getObject("assigned_technician_id", Integer.class));
+            r.setCategoryName(rs.getString("category_name"));
+            list.add(r);
             }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -238,20 +250,21 @@ public class PurchaseRequestDAO {
     }
 
     public boolean assignTechnician(int requestId, int technicianId) {
-        String sql = "UPDATE PurchaseRequest SET technician_id = ? WHERE id = ? ";
+    String sql = "UPDATE PurchaseRequest SET assigned_technician_id = ? WHERE id = ?";
 
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, technicianId);
-            stmt.setInt(2, requestId);
-            return stmt.executeUpdate() > 0;
+        stmt.setInt(1, technicianId);
+        stmt.setInt(2, requestId);
+        return stmt.executeUpdate() > 0;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
     }
+}
+
 
     private PurchaseRequest extractBasicRequest(ResultSet rs) throws SQLException {
         PurchaseRequest req = new PurchaseRequest();
