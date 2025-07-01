@@ -9,7 +9,7 @@ import java.util.List;
 
 public class PurchaseProposalDAO {
 
-    // Vložení nového návrhu
+    
     public void insert(PurchaseProposal proposal) {
         String sql = "INSERT INTO PurchaseProposal (request_id, technician_id, features, price, date, is_winner) VALUES (?, ?, ?, ?, ?, false)";
 
@@ -34,8 +34,7 @@ public class PurchaseProposalDAO {
             e.printStackTrace();
         }
     }
-
-    // Načtení návrhů pro konkrétní request (včetně jména technika)
+    
     public List<PurchaseProposal> findByRequestId(int requestId) {
         List<PurchaseProposal> list = new ArrayList<>();
         String sql =
@@ -69,8 +68,7 @@ public class PurchaseProposalDAO {
 
         return list;
     }
-
-    // Zkontroluje, zda již daný technik navrhl řešení k dané žádosti
+    
     public boolean existsProposal(int requestId, int technicianId) {
         String sql = "SELECT COUNT(*) FROM PurchaseProposal WHERE request_id = ? AND technician_id = ?";
 
@@ -131,7 +129,6 @@ public class PurchaseProposalDAO {
         }
     }
 
-    // Odmítnutí návrhu – smažeme návrh
     public boolean rejectProposal(int proposalId) {
         String sql = "DELETE FROM PurchaseProposal WHERE id = ?";
 

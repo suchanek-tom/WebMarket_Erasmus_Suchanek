@@ -39,6 +39,12 @@
             <artifactId>freemarker</artifactId>
             <version>2.3.32</version>
         </dependency>
+        <dependency>
+            <groupId>com.h3xstream.findsecbugs</groupId>
+            <artifactId>findsecbugs-plugin-deps</artifactId>
+            <version>1.4.5</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     
      <build>
